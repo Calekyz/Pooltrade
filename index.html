@@ -359,6 +359,55 @@
       color: #7a82a0;
       margin-top: 6px;
     }
+
+    /* ----- Currency Converter ----- */
+    .converter-box {
+      background: rgba(255, 255, 255, 0.04);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 16px;
+      border: 1px solid rgba(247, 183, 51, 0.15);
+    }
+    .converter-box .convert-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .converter-box .convert-row input {
+      flex: 1;
+      min-width: 100px;
+      padding: 10px 14px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.10);
+      border-radius: 12px;
+      color: #fff;
+      font-size: 15px;
+      outline: none;
+      transition: border 0.2s;
+    }
+    .converter-box .convert-row input:focus {
+      border-color: #f7b733;
+      background: rgba(255, 255, 255, 0.08);
+    }
+    .converter-box .convert-row input::placeholder {
+      color: #7a82a0;
+    }
+    .converter-box .convert-result {
+      font-size: 18px;
+      font-weight: 700;
+      color: #f7b733;
+      background: rgba(247, 183, 51, 0.08);
+      padding: 6px 16px;
+      border-radius: 30px;
+      white-space: nowrap;
+    }
+    .converter-box .convert-note {
+      font-size: 12px;
+      color: #8892b0;
+      margin-top: 6px;
+    }
+
     .file-input-wrapper {
       display: flex;
       align-items: center;
@@ -524,6 +573,10 @@
         min-width: 50px;
         padding: 4px 8px;
       }
+      .converter-box .convert-result {
+        font-size: 16px;
+        padding: 4px 12px;
+      }
     }
   </style>
 </head>
@@ -534,7 +587,7 @@
     <!-- HEADER -->
     <div class="header">
       <h1>⚡ calekyzFX</h1>
-      <div class="sub"><i class="fas fa-users"></i> Pool Trading – (50$-20$)</div>
+      <div class="sub"><i class="fas fa-users"></i> Pool Trading – (50$–20$)</div>
     </div>
 
     <!-- ===== HOW POOL TRADING WORKS (Accordion) ===== -->
@@ -632,10 +685,28 @@
     <form id="entryForm" novalidate>
       <div id="paymentDetails">
         <div class="form-group" id="mpesaGroup">
+          <!-- ===== USD → KES CONVERTER (only for M-Pesa) ===== -->
+          <div class="converter-box" id="converterBox">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <label style="font-size:14px; font-weight:500; color:#c8d0e0;">
+                <i class="fas fa-dollar-sign" style="color:#f7b733; margin-right:6px;"></i> Amount in USD
+              </label>
+              <span style="font-size:12px; color:#8892b0;">1 USD ≈ <span id="rateDisplay">130</span> KES</span>
+            </div>
+            <div class="convert-row">
+              <input type="number" id="usdAmount" placeholder="Enter USD amount (e.g., 50)" min="0" step="0.01" />
+              <span class="convert-result" id="kesResult">— KES</span>
+            </div>
+            <div class="convert-note">
+              <i class="fas fa-info-circle"></i> Instant conversion – this is what you'll send via M‑Pesa.
+            </div>
+          </div>
+
           <label><i class="fas fa-sms"></i> Your M‑Pesa confirmation message</label>
           <textarea id="mpesaMessage" rows="3" placeholder="Paste the M‑Pesa message you received after sending ..."></textarea>
           <div class="hint">Include the transaction code, amount, and sender name.</div>
         </div>
+
         <div class="form-group" id="binanceGroup" style="display:none;">
           <label><i class="fas fa-hash"></i> Your Binance Transaction ID</label>
           <input type="text" id="binanceTx" placeholder="Paste your withdrawal/deposit TX ID" />
@@ -700,6 +771,7 @@
       const TOTAL_SPOTS = 100;
       const WHATSAPP_NUMBER = '254101606189';
       const POOL_NAME = 'calekyzFX Pool';
+      const USD_TO_KES = 130; // ← CHANGE THIS RATE IF NEEDED
 
       // ============================================================
       // 3. DOM REFS
@@ -720,6 +792,25 @@
       const binanceTx = document.getElementById('binanceTx');
       const screenshotInput = document.getElementById('screenshot');
       const methodBtns = document.querySelectorAll('.method-btn');
+
+      // Converter elements
+      const usdInput = document.getElementById('usdAmount');
+      const kesResult = document.getElementById('kesResult');
+      const rateDisplay = document.getElementById('rateDisplay');
+
+      // Show the current rate
+      rateDisplay.textContent = USD_TO_KES;
+
+      // Live conversion
+      usdInput.addEventListener('input', function() {
+        const usd = parseFloat(this.value);
+        if (isNaN(usd) || usd < 0) {
+          kesResult.textContent = '— KES';
+          return;
+        }
+        const kes = usd * USD_TO_KES;
+        kesResult.textContent = kes.toFixed(2) + ' KES';
+      });
 
       let currentMethod = 'mpesa';
       let currentRemaining = TOTAL_SPOTS;
@@ -851,7 +942,6 @@
       }
 
       function startListener() {
-        // Set a timeout: if we don't get data in 8 seconds, show a manual refresh option.
         loadTimeout = setTimeout(() => {
           if (!firebaseReady) {
             statusMsg.innerHTML =
@@ -881,7 +971,6 @@
               submitBtn.style.opacity = '1';
             }
           } else {
-            // Database is empty, initialize it.
             dbRef.set(TOTAL_SPOTS).then(() => {
               currentRemaining = TOTAL_SPOTS;
               spotsLeftEl.textContent = TOTAL_SPOTS;
@@ -901,7 +990,6 @@
         });
       }
 
-      // Start Firebase
       initFirebase();
 
       // ============================================================
@@ -914,7 +1002,7 @@
       }
 
       // ============================================================
-      // 10. SUBMIT HANDLER (ATOMIC TRANSACTION)
+      // 10. SUBMIT HANDLER
       // ============================================================
       form.addEventListener('submit', function(e) {
         e.preventDefault();
@@ -958,7 +1046,7 @@
 
         dbRef.transaction((currentValue) => {
           if (currentValue === null) return TOTAL_SPOTS;
-          if (currentValue <= 0) return; // abort
+          if (currentValue <= 0) return;
           return currentValue - 1;
         }, (error, committed, snapshot) => {
           if (error) {
