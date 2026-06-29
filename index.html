@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>calekyzFX Pool Trading</title>
+  <!-- Font for icons & clean look -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    /* ===== RESET & BASE ===== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #0b0e1a 0%, #1a1f33 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    .container {
+      max-width: 560px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 32px;
+      padding: 32px 28px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #f0f0f0;
+    }
+    /* ===== HEADER ===== */
+    .header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      background: linear-gradient(to right, #f7b733, #fc4a1a);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .header .sub {
+      font-size: 14px;
+      color: #aab;
+      margin-top: 4px;
+      letter-spacing: 0.3px;
+    }
+    .header .sub i {
+      margin-right: 6px;
+      color: #f7b733;
+    }
+    /* ===== COUNTER ===== */
+    .counter-box {
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 60px;
+      padding: 14px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .counter-box .label {
+      font-size: 15px;
+      font-weight: 500;
+      color: #ccd;
+    }
+    .counter-box .number {
+      font-size: 28px;
+      font-weight: 700;
+      color: #f7b733;
+      background: rgba(247, 183, 51, 0.12);
+      padding: 0 16px;
+      border-radius: 40px;
+      line-height: 1.4;
+    }
+    /* ===== PAYMENT METHODS ===== */
+    .method-toggle {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .method-btn {
+      flex: 1;
+      padding: 12px 6px;
+      border: 2px solid rgba(255, 255, 255, 0.15);
+      border-radius: 16px;
+      background: transparent;
+      color: #b0b8cc;
+      font-weight: 600;
+      font-size: 15px;
+      cursor: pointer;
+      transition: all 0.25s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .method-btn i {
+      font-size: 20px;
+    }
+    .method-btn.active {
+      border-color: #f7b733;
+      background: rgba(247, 183, 51, 0.08);
+      color: #fff;
+      box-shadow: 0 0 20px rgba(247, 183, 51, 0.1);
+    }
+    .method-btn:hover {
+      border-color: #f7b73355;
+    }
+    /* ===== FORM ===== */
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      color: #c8d0e0;
+      margin-bottom: 6px;
+    }
+    .form-group label i {
+      margin-right: 6px;
+      color: #f7b733;
+    }
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 14px 16px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.10);
+      border-radius: 16px;
+      color: #fff;
+      font-size: 15px;
+      transition: border 0.2s;
+      outline: none;
+      resize: vertical;
+    }
+    .form-group input:focus,
+    .form-group textarea:focus {
+      border-color: #f7b733;
+      background: rgba(255, 255, 255, 0.08);
+    }
+    .form-group input::placeholder,
+    .form-group textarea::placeholder {
+      color: #7a82a0;
+    }
+    .form-group .hint {
+      font-size: 12px;
+      color: #7a82a0;
+      margin-top: 6px;
+    }
+    .file-input-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.04);
+      padding: 6px 16px 6px 6px;
+      border-radius: 60px;
+      border: 1px dashed rgba(255, 255, 255, 0.15);
+    }
+    .file-input-wrapper input[type="file"] {
+      background: transparent;
+      border: none;
+      padding: 8px 0;
+      color: #b0b8cc;
+      font-size: 13px;
+      flex: 1;
+    }
+    .file-input-wrapper input[type="file"]::file-selector-button {
+      background: #f7b733;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 40px;
+      font-weight: 600;
+      color: #0b0e1a;
+      cursor: pointer;
+      margin-right: 10px;
+      transition: background 0.2s;
+    }
+    .file-input-wrapper input[type="file"]::file-selector-button:hover {
+      background: #e5a82a;
+    }
+    /* ===== SUBMIT BUTTON ===== */
+    .btn-submit {
+      width: 100%;
+      padding: 18px;
+      border: none;
+      border-radius: 60px;
+      background: linear-gradient(to right, #f7b733, #fc4a1a);
+      color: #0b0e1a;
+      font-weight: 700;
+      font-size: 18px;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 8px 24px rgba(247, 183, 51, 0.25);
+      margin-top: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+    .btn-submit:hover {
+      transform: scale(1.02);
+      box-shadow: 0 12px 32px rgba(247, 183, 51, 0.35);
+    }
+    .btn-submit:active {
+      transform: scale(0.97);
+    }
+    .btn-submit i {
+      font-size: 20px;
+    }
+    /* ===== ENTRY CODE DISPLAY ===== */
+    .entry-result {
+      margin-top: 24px;
+      padding: 16px 20px;
+      background: rgba(247, 183, 51, 0.08);
+      border-radius: 20px;
+      border: 1px solid rgba(247, 183, 51, 0.2);
+      display: none;
+      text-align: center;
+    }
+    .entry-result.show {
+      display: block;
+    }
+    .entry-result .code {
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      color: #f7b733;
+      margin: 6px 0 4px;
+    }
+    .entry-result .info {
+      font-size: 14px;
+      color: #b0b8cc;
+    }
+    /* ===== HELP / FOOTER ===== */
+    .help-section {
+      margin-top: 28px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .help-section a {
+      color: #b0b8cc;
+      text-decoration: none;
+      font-size: 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: color 0.2s;
+    }
+    .help-section a:hover {
+      color: #f7b733;
+    }
+    .help-section a i {
+      font-size: 18px;
+    }
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 480px) {
+      .container { padding: 24px 16px; }
+      .counter-box .number { font-size: 22px; }
+      .method-btn { font-size: 13px; padding: 10px 4px; }
+      .btn-submit { font-size: 16px; padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- HEADER -->
+  <div class="header">
+    <h1>⚡ calekyzFX</h1>
+    <div class="sub"><i class="fas fa-users"></i> Pool Trading – Secure Entry</div>
+  </div>
+
+  <!-- REMAINING SPOTS -->
+  <div class="counter-box">
+    <span class="label"><i class="fas fa-chair"></i> Spots remaining</span>
+    <span class="number" id="spotsLeft">100</span>
+  </div>
+
+  <!-- PAYMENT METHOD SELECTOR -->
+  <div class="method-toggle">
+    <button class="method-btn active" data-method="mpesa">
+      <i class="fas fa-phone-alt"></i> M‑Pesa
+    </button>
+    <button class="method-btn" data-method="binance">
+      <i class="fab fa-bitcoin"></i> Binance
+    </button>
+  </div>
+
+  <!-- FORM -->
+  <form id="entryForm" novalidate>
+    <!-- Dynamic payment details -->
+    <div id="paymentDetails">
+      <!-- M-Pesa (default) -->
+      <div class="form-group" id="mpesaGroup">
+        <label><i class="fas fa-sms"></i> M‑Pesa confirmation message</label>
+        <textarea id="mpesaMessage" rows="3" placeholder="Paste the M‑Pesa message you received …"></textarea>
+        <div class="hint">Include the transaction code, amount, and sender.</div>
+      </div>
+      <!-- Binance (hidden by default) -->
+      <div class="form-group" id="binanceGroup" style="display:none;">
+        <label><i class="fas fa-qrcode"></i> Binance deposit details</label>
+        <input type="text" id="binanceTx" placeholder="Transaction ID or deposit address">
+        <div class="hint">You can also paste the deposit address or ID.</div>
+      </div>
+    </div>
+
+    <!-- Screenshot (optional) -->
+    <div class="form-group">
+      <label><i class="fas fa-camera"></i> Screenshot (optional)</label>
+      <div class="file-input-wrapper">
+        <input type="file" id="screenshot" accept="image/*">
+      </div>
+      <div class="hint">Upload a screenshot of your Binance transfer (will not be sent via WhatsApp automatically).</div>
+    </div>
+
+    <!-- Submit -->
+    <button type="submit" class="btn-submit">
+      <i class="fab fa-whatsapp"></i> Submit & Send to WhatsApp
+    </button>
+  </form>
+
+  <!-- ENTRY RESULT -->
+  <div class="entry-result" id="entryResult">
+    <div class="info">🎫 Your entry code</div>
+    <div class="code" id="entryCode">POOL-001</div>
+    <div class="info">Remaining spots: <span id="spotsAfter">99</span></div>
+  </div>
+
+  <!-- HELP / CONTACT -->
+  <div class="help-section">
+    <a href="https://wa.me/254101606189" target="_blank">
+      <i class="fab fa-whatsapp"></i> Help Center
+    </a>
+    <a href="mailto:support@calekyzfx.com?subject=Pool%20Trading%20Help">
+      <i class="fas fa-envelope"></i> Email Support
+    </a>
+  </div>
+</div>
+
+<script>
+  (function() {
+    "use strict";
+
+    // ===== CONFIGURATION =====
+    const TARGET = 100;
+    const WHATSAPP_NUMBER = '254101606189'; // your WhatsApp number
+    const POOL_NAME = 'calekyzFX Pool';
+
+    // ===== DOM refs =====
+    const spotsLeftEl = document.getElementById('spotsLeft');
+    const spotsAfterEl = document.getElementById('spotsAfter');
+    const entryCodeEl = document.getElementById('entryCode');
+    const entryResultEl = document.getElementById('entryResult');
+    const form = document.getElementById('entryForm');
+
+    const mpesaGroup = document.getElementById('mpesaGroup');
+    const binanceGroup = document.getElementById('binanceGroup');
+    const mpesaMsg = document.getElementById('mpesaMessage');
+    const binanceTx = document.getElementById('binanceTx');
+    const screenshotInput = document.getElementById('screenshot');
+
+    const methodBtns = document.querySelectorAll('.method-btn');
+
+    // ===== STATE (stored in localStorage) =====
+    function getRemaining() {
+      let val = localStorage.getItem('pool_remaining');
+      if (val === null) {
+        // initialise
+        localStorage.setItem('pool_remaining', String(TARGET));
+        return TARGET;
+      }
+      return parseInt(val, 10);
+    }
+
+    function setRemaining(val) {
+      localStorage.setItem('pool_remaining', String(val));
+    }
+
+    let remaining = getRemaining();
+    spotsLeftEl.textContent = remaining;
+
+    // ===== METHOD TOGGLE =====
+    let currentMethod = 'mpesa'; // 'mpesa' or 'binance'
+
+    methodBtns.forEach(btn => {
+      btn.addEventListener('click', function() {
+        methodBtns.forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        currentMethod = this.dataset.method;
+        if (currentMethod === 'mpesa') {
+          mpesaGroup.style.display = 'block';
+          binanceGroup.style.display = 'none';
+        } else {
+          mpesaGroup.style.display = 'none';
+          binanceGroup.style.display = 'block';
+        }
+      });
+    });
+
+    // ===== GENERATE ENTRY CODE =====
+    function generateEntryCode() {
+      // simple sequential: POOL-XXX where XXX is 100 - remaining + 1 (if we know how many have entered)
+      // We'll base it on how many have entered = TARGET - remaining + 1 (for this new entry)
+      const entered = TARGET - remaining + 1;
+      const padded = String(entered).padStart(3, '0');
+      return `POOL-${padded}`;
+    }
+
+    // ===== SUBMIT HANDLER =====
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      // 1. Check if spots are available
+      if (remaining <= 0) {
+        alert('❌ Sorry, the pool is full (100 participants reached).');
+        return;
+      }
+
+      // 2. Gather payment details based on method
+      let paymentText = '';
+      if (currentMethod === 'mpesa') {
+        const msg = mpesaMsg.value.trim();
+        if (!msg) {
+          alert('Please paste your M‑Pesa confirmation message.');
+          mpesaMsg.focus();
+          return;
+        }
+        paymentText = `M‑Pesa message: ${msg}`;
+      } else {
+        const tx = binanceTx.value.trim();
+        if (!tx) {
+          alert('Please enter your Binance transaction ID or deposit address.');
+          binanceTx.focus();
+          return;
+        }
+        paymentText = `Binance TX/Address: ${tx}`;
+      }
+
+      // 3. Screenshot info (we can't attach, but we note it)
+      let screenshotInfo = '';
+      if (screenshotInput.files.length > 0) {
+        const fileName = screenshotInput.files[0].name;
+        screenshotInfo = ` (Screenshot: ${fileName} – please attach manually)`;
+      }
+
+      // 4. Generate entry code
+      const entryCode = generateEntryCode();
+
+      // 5. Decrement remaining
+      remaining--;
+      setRemaining(remaining);
+      spotsLeftEl.textContent = remaining;
+
+      // 6. Show entry result
+      entryCodeEl.textContent = entryCode;
+      spotsAfterEl.textContent = remaining;
+      entryResultEl.classList.add('show');
+
+      // 7. Build WhatsApp message
+      const message = `🎯 *${POOL_NAME} Entry*%0A` +
+                      `🔹 *Entry Code:* ${entryCode}%0A` +
+                      `💳 *Method:* ${currentMethod.toUpperCase()}%0A` +
+                      `📝 *Details:* ${paymentText}%0A` +
+                      `📸 ${screenshotInfo ? screenshotInfo : 'No screenshot attached'}`;
+
+      // 8. Open WhatsApp
+      const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${message}`;
+      window.open(url, '_blank');
+
+      // 9. (Optional) reset the file input after submission
+      screenshotInput.value = '';
+
+      // 10. If remaining reaches 0, disable further submissions
+      if (remaining === 0) {
+        spotsLeftEl.textContent = '0';
+        const submitBtn = form.querySelector('.btn-submit');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-check-circle"></i> Pool Full';
+        submitBtn.style.opacity = '0.7';
+        submitBtn.style.cursor = 'not-allowed';
+        alert('🎉 The pool has reached 100 participants! No more entries.');
+      }
+    });
+
+    // ===== INIT: if already full, disable =====
+    if (remaining === 0) {
+      const submitBtn = form.querySelector('.btn-submit');
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="fas fa-check-circle"></i> Pool Full';
+      submitBtn.style.opacity = '0.7';
+      submitBtn.style.cursor = 'not-allowed';
+    }
+
+  })();
+</script>
+
+</body>
+</html>
