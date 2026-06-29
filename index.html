@@ -6,6 +6,9 @@
   <title>calekyzFX Pool Trading</title>
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <!-- Firebase SDKs (Compat version - easiest for single HTML) -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
   <style>
     /* ===== RESET & BASE ===== */
     * {
@@ -37,7 +40,7 @@
     /* ===== HEADER ===== */
     .header {
       text-align: center;
-      margin-bottom: 28px;
+      margin-bottom: 20px;
     }
     .header h1 {
       font-size: 28px;
@@ -58,6 +61,52 @@
       margin-right: 6px;
       color: #f7b733;
     }
+
+    /* ===== COUNTDOWN TIMER ===== */
+    .countdown-box {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(247, 183, 51, 0.2);
+      border-radius: 16px;
+      padding: 16px 12px;
+      margin-bottom: 24px;
+      text-align: center;
+    }
+    .countdown-box .timer-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #8892b0;
+      margin-bottom: 6px;
+    }
+    .countdown-box .timer-display {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      font-weight: 700;
+    }
+    .countdown-box .timer-unit {
+      background: rgba(0, 0, 0, 0.3);
+      padding: 6px 12px;
+      border-radius: 10px;
+      min-width: 60px;
+    }
+    .countdown-box .timer-unit .num {
+      font-size: 28px;
+      color: #f7b733;
+      line-height: 1.2;
+    }
+    .countdown-box .timer-unit .label {
+      font-size: 10px;
+      color: #8892b0;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .countdown-box .timer-live {
+      font-size: 22px;
+      font-weight: 700;
+      color: #2ecc71;
+    }
+
     /* ===== COUNTER ===== */
     .counter-box {
       background: rgba(255, 255, 255, 0.06);
@@ -340,6 +389,16 @@
       font-size: 13px;
       color: #8892b0;
     }
+    /* ===== LOADING SPINNER ===== */
+    .loading-indicator {
+      font-size: 14px;
+      color: #8892b0;
+      text-align: center;
+      padding: 4px 0 10px 0;
+    }
+    .loading-indicator i {
+      margin-right: 6px;
+    }
     /* ===== HELP / FOOTER ===== */
     .help-section {
       margin-top: 28px;
@@ -372,6 +431,8 @@
       .method-btn { font-size: 13px; padding: 10px 4px; }
       .btn-submit { font-size: 16px; padding: 16px; }
       .receiver-row .value { font-size: 14px; }
+      .countdown-box .timer-unit .num { font-size: 22px; }
+      .countdown-box .timer-unit { min-width: 50px; padding: 4px 8px; }
     }
   </style>
 </head>
@@ -384,11 +445,36 @@
     <div class="sub"><i class="fas fa-users"></i> Pool Trading – Secure Entry</div>
   </div>
 
-  <!-- REMAINING SPOTS -->
+  <!-- ===== COUNTDOWN TIMER ===== -->
+  <div class="countdown-box" id="countdownBox">
+    <div class="timer-label"><i class="far fa-clock"></i> Pool starts in</div>
+    <div class="timer-display" id="timerDisplay">
+      <div class="timer-unit">
+        <div class="num" id="timerDays">00</div>
+        <div class="label">Days</div>
+      </div>
+      <div class="timer-unit">
+        <div class="num" id="timerHours">00</div>
+        <div class="label">Hours</div>
+      </div>
+      <div class="timer-unit">
+        <div class="num" id="timerMinutes">00</div>
+        <div class="label">Min</div>
+      </div>
+      <div class="timer-unit">
+        <div class="num" id="timerSeconds">00</div>
+        <div class="label">Sec</div>
+      </div>
+    </div>
+    <div id="timerLiveMsg" style="display:none;" class="timer-live">🚀 Pool is LIVE! Join now.</div>
+  </div>
+
+  <!-- REMAINING SPOTS (LIVE) -->
   <div class="counter-box">
     <span class="label"><i class="fas fa-chair"></i> Spots remaining</span>
-    <span class="number" id="spotsLeft">100</span>
+    <span class="number" id="spotsLeft">Loading...</span>
   </div>
+  <div class="loading-indicator" id="statusMsg"><i class="fas fa-spinner fa-pulse"></i> Connecting to live server...</div>
 
   <!-- PAYMENT METHOD SELECTOR -->
   <div class="method-toggle">
@@ -488,18 +574,80 @@
   (function() {
     "use strict";
 
-    // ===== CONFIGURATION =====
-    const TARGET = 100;
+    // ======================================================
+    // 1. 🔥 FIREBASE CONFIG (YOURS PASTED HERE)
+    // ======================================================
+    const FIREBASE_CONFIG = {
+      apiKey: "AIzaSyD9LNXH57bkQSDXCR-1Ey4zfWPlXcQljNs",
+      authDomain: "pooltrade-8bea9.firebaseapp.com",
+      databaseURL: "https://pooltrade-8bea9-default-rtdb.firebaseio.com",
+      projectId: "pooltrade-8bea9",
+      storageBucket: "pooltrade-8bea9.firebasestorage.app",
+      messagingSenderId: "131969808350",
+      appId: "1:131969808350:web:b68bfe3d97e72144facf4f"
+    };
+
+    // ======================================================
+    // 2. INIT FIREBASE
+    // ======================================================
+    firebase.initializeApp(FIREBASE_CONFIG);
+    const dbRef = firebase.database().ref('/pool/remaining');
+
+    // ======================================================
+    // 3. CONSTANTS
+    // ======================================================
+    const TOTAL_SPOTS = 100;
     const WHATSAPP_NUMBER = '254101606189';
     const POOL_NAME = 'calekyzFX Pool';
+    const DB_PATH = '/pool/remaining';
 
-    // ===== DOM REFS =====
+    // ======================================================
+    // 4. COUNTDOWN TIMER (Target: July 1, 2026, Midnight EAT)
+    // ======================================================
+    const TARGET_DATE = new Date('2026-07-01T00:00:00+03:00').getTime(); // Kenya Time (GMT+3)
+
+    function updateTimer() {
+      const now = Date.now();
+      const diff = TARGET_DATE - now;
+
+      const timerDisplay = document.getElementById('timerDisplay');
+      const liveMsg = document.getElementById('timerLiveMsg');
+
+      if (diff <= 0) {
+        // Timer is finished
+        timerDisplay.style.display = 'none';
+        liveMsg.style.display = 'block';
+        return;
+      }
+
+      timerDisplay.style.display = 'flex';
+      liveMsg.style.display = 'none';
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+      document.getElementById('timerDays').textContent = String(days).padStart(2, '0');
+      document.getElementById('timerHours').textContent = String(hours).padStart(2, '0');
+      document.getElementById('timerMinutes').textContent = String(minutes).padStart(2, '0');
+      document.getElementById('timerSeconds').textContent = String(seconds).padStart(2, '0');
+    }
+
+    // Update every second
+    updateTimer();
+    setInterval(updateTimer, 1000);
+
+    // ======================================================
+    // 5. DOM REFS
+    // ======================================================
     const spotsLeftEl = document.getElementById('spotsLeft');
     const spotsAfterEl = document.getElementById('spotsAfter');
     const entryCodeEl = document.getElementById('entryCode');
     const entryResultEl = document.getElementById('entryResult');
     const form = document.getElementById('entryForm');
     const submitBtn = document.getElementById('submitBtn');
+    const statusMsg = document.getElementById('statusMsg');
 
     const mpesaGroup = document.getElementById('mpesaGroup');
     const binanceGroup = document.getElementById('binanceGroup');
@@ -509,40 +657,23 @@
     const mpesaMsg = document.getElementById('mpesaMessage');
     const binanceTx = document.getElementById('binanceTx');
     const screenshotInput = document.getElementById('screenshot');
-
     const methodBtns = document.querySelectorAll('.method-btn');
 
-    // ===== STATE (localStorage) =====
-    function getRemaining() {
-      let val = localStorage.getItem('pool_remaining');
-      if (val === null) {
-        localStorage.setItem('pool_remaining', String(TARGET));
-        return TARGET;
-      }
-      return parseInt(val, 10);
-    }
+    let currentMethod = 'mpesa';
+    let currentRemaining = TOTAL_SPOTS;
 
-    function setRemaining(val) {
-      localStorage.setItem('pool_remaining', String(val));
-    }
-
-    let remaining = getRemaining();
-    spotsLeftEl.textContent = remaining;
-
-    // ===== COPY BUTTONS LOGIC =====
+    // ======================================================
+    // 6. COPY BUTTONS LOGIC
+    // ======================================================
     document.querySelectorAll('.copy-btn').forEach(btn => {
       btn.addEventListener('click', function(e) {
         e.stopPropagation();
         const text = this.dataset.copy;
         if (!text) return;
-
-        // Try clipboard API
         if (navigator.clipboard && navigator.clipboard.writeText) {
           navigator.clipboard.writeText(text).then(() => {
             showCopiedFeedback(this);
-          }).catch(() => {
-            fallbackCopy(text, this);
-          });
+          }).catch(() => fallbackCopy(text, this));
         } else {
           fallbackCopy(text, this);
         }
@@ -576,15 +707,14 @@
       }, 2000);
     }
 
-    // ===== METHOD TOGGLE =====
-    let currentMethod = 'mpesa';
-
+    // ======================================================
+    // 7. METHOD TOGGLE
+    // ======================================================
     methodBtns.forEach(btn => {
       btn.addEventListener('click', function() {
         methodBtns.forEach(b => b.classList.remove('active'));
         this.classList.add('active');
         currentMethod = this.dataset.method;
-        
         if (currentMethod === 'mpesa') {
           mpesaReceiver.style.display = 'block';
           binanceReceiver.style.display = 'none';
@@ -599,18 +729,51 @@
       });
     });
 
-    // ===== GENERATE ENTRY CODE =====
-    function generateEntryCode() {
-      const entered = TARGET - remaining + 1;
-      const padded = String(entered).padStart(3, '0');
+    // ======================================================
+    // 8. LIVE COUNTER (FIREBASE LISTENER)
+    // ======================================================
+    dbRef.on('value', (snapshot) => {
+      const val = snapshot.val();
+      if (val !== null && val !== undefined) {
+        currentRemaining = val;
+        spotsLeftEl.textContent = val;
+        statusMsg.innerHTML = '<i class="fas fa-check-circle" style="color:#2ecc71;"></i> Live & synced';
+        statusMsg.style.color = '#2ecc71';
+
+        if (val <= 0) {
+          submitBtn.disabled = true;
+          submitBtn.innerHTML = '<i class="fas fa-check-circle"></i> Pool Full';
+          submitBtn.style.opacity = '0.7';
+        } else {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<i class="fab fa-whatsapp"></i> Submit & Send to WhatsApp';
+          submitBtn.style.opacity = '1';
+        }
+      } else {
+        dbRef.set(TOTAL_SPOTS).catch(err => console.error(err));
+        spotsLeftEl.textContent = TOTAL_SPOTS;
+      }
+    }, (error) => {
+      statusMsg.innerHTML = '⚠️ Error connecting to server. Please refresh.';
+      console.error('Firebase read error:', error);
+    });
+
+    // ======================================================
+    // 9. GENERATE ENTRY CODE
+    // ======================================================
+    function generateEntryCode(newRemaining) {
+      const enteredCount = TOTAL_SPOTS - newRemaining;
+      const padded = String(enteredCount).padStart(3, '0');
       return `POOL-${padded}`;
     }
 
-    // ===== SUBMIT HANDLER =====
+    // ======================================================
+    // 10. SUBMIT HANDLER (FIREBASE TRANSACTION)
+    // ======================================================
     form.addEventListener('submit', function(e) {
       e.preventDefault();
 
-      if (remaining <= 0) {
+      if (currentRemaining <= 0) {
         alert('❌ Sorry, the pool is full (100 participants reached).');
         return;
       }
@@ -639,50 +802,57 @@
         screenshotInfo = ` (Screenshot: ${screenshotInput.files[0].name} - attach manually)`;
       }
 
-      const entryCode = generateEntryCode();
-
-      // Decrement & save
-      remaining--;
-      setRemaining(remaining);
-      spotsLeftEl.textContent = remaining;
-
-      // Show DONE! result
-      entryCodeEl.textContent = entryCode;
-      spotsAfterEl.textContent = remaining;
-      entryResultEl.classList.add('show');
-      
-      // Scroll to the result so they see it immediately
-      entryResultEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-      // Build WhatsApp message
-      const message = `🎯 *${POOL_NAME} Entry*%0A` +
-                      `🔹 *Entry Code:* ${entryCode}%0A` +
-                      `💳 *Method:* ${currentMethod.toUpperCase()}%0A` +
-                      `📝 *Proof:* ${paymentText}%0A` +
-                      `📸 ${screenshotInfo || 'No screenshot attached'}`;
-
-      // Open WhatsApp
-      window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${message}`, '_blank');
-
-      // Clear the file input
-      screenshotInput.value = '';
-
-      // If pool is full, disable submit
-      if (remaining === 0) {
-        spotsLeftEl.textContent = '0';
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<i class="fas fa-check-circle"></i> Pool Full';
-        submitBtn.style.opacity = '0.7';
-        alert('🎉 The pool has reached 100 participants! No more entries.');
-      }
-    });
-
-    // ===== INIT: if already full =====
-    if (remaining === 0) {
       submitBtn.disabled = true;
-      submitBtn.innerHTML = '<i class="fas fa-check-circle"></i> Pool Full';
-      submitBtn.style.opacity = '0.7';
-    }
+      submitBtn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Processing...';
+
+      dbRef.transaction((currentValue) => {
+        if (currentValue === null) return TOTAL_SPOTS;
+        if (currentValue <= 0) return;
+        return currentValue - 1;
+      }, (error, committed, snapshot) => {
+        if (error) {
+          alert('❌ Server error. Please refresh and try again.');
+          console.error(error);
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<i class="fab fa-whatsapp"></i> Submit & Send to WhatsApp';
+          return;
+        }
+
+        if (!committed) {
+          alert('❌ Sorry, the pool just filled up! No more spots.');
+          submitBtn.disabled = true;
+          submitBtn.innerHTML = '<i class="fas fa-check-circle"></i> Pool Full';
+          submitBtn.style.opacity = '0.7';
+          return;
+        }
+
+        const newRemaining = snapshot.val();
+        const entryCode = generateEntryCode(newRemaining);
+
+        entryCodeEl.textContent = entryCode;
+        spotsAfterEl.textContent = newRemaining;
+        entryResultEl.classList.add('show');
+        entryResultEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+        const message = `🎯 *${POOL_NAME} Entry*%0A` +
+                        `🔹 *Entry Code:* ${entryCode}%0A` +
+                        `💳 *Method:* ${currentMethod.toUpperCase()}%0A` +
+                        `📝 *Proof:* ${paymentText}%0A` +
+                        `📸 ${screenshotInfo || 'No screenshot attached'}`;
+
+        window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${message}`, '_blank');
+
+        screenshotInput.value = '';
+        if (newRemaining > 0) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<i class="fab fa-whatsapp"></i> Submit & Send to WhatsApp';
+        } else {
+          submitBtn.disabled = true;
+          submitBtn.innerHTML = '<i class="fas fa-check-circle"></i> Pool Full';
+          submitBtn.style.opacity = '0.7';
+        }
+      });
+    });
 
   })();
 </script>
