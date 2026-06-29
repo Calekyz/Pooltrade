@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>calekyzFX Pool Trading</title>
   <!-- Font Awesome Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <!-- Firebase SDKs (Compat version - easiest for single HTML) -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <!-- Firebase SDKs (Compat) -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js">
+  </script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js">
+  </script>
   <style>
     /* ===== RESET & BASE ===== */
     * {
@@ -37,6 +39,7 @@
       border: 1px solid rgba(255, 255, 255, 0.08);
       color: #f0f0f0;
     }
+
     /* ===== HEADER ===== */
     .header {
       text-align: center;
@@ -45,7 +48,6 @@
     .header h1 {
       font-size: 28px;
       font-weight: 700;
-      letter-spacing: -0.5px;
       background: linear-gradient(to right, #f7b733, #fc4a1a);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -55,10 +57,71 @@
       font-size: 14px;
       color: #aab;
       margin-top: 4px;
-      letter-spacing: 0.3px;
     }
     .header .sub i {
       margin-right: 6px;
+      color: #f7b733;
+    }
+
+    /* ===== POOL INFO ACCORDION ===== */
+    .pool-info {
+      background: rgba(255, 255, 255, 0.04);
+      border-radius: 16px;
+      margin-bottom: 22px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      overflow: hidden;
+    }
+    .pool-info .toggle {
+      width: 100%;
+      background: transparent;
+      border: none;
+      color: #f0f0f0;
+      padding: 14px 18px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background 0.2s;
+    }
+    .pool-info .toggle:hover {
+      background: rgba(247, 183, 51, 0.05);
+    }
+    .pool-info .toggle i {
+      color: #f7b733;
+      margin-right: 10px;
+    }
+    .pool-info .toggle .arrow {
+      transition: transform 0.3s;
+    }
+    .pool-info .toggle .arrow.open {
+      transform: rotate(180deg);
+    }
+    .pool-info .content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease, padding 0.3s ease;
+      padding: 0 18px;
+      color: #c8d0e0;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .pool-info .content.open {
+      max-height: 500px;
+      padding: 0 18px 18px 18px;
+    }
+    .pool-info .content p {
+      margin-bottom: 8px;
+    }
+    .pool-info .content ul {
+      padding-left: 20px;
+      margin-bottom: 6px;
+    }
+    .pool-info .content ul li {
+      margin-bottom: 4px;
+    }
+    .pool-info .content strong {
       color: #f7b733;
     }
 
@@ -115,7 +178,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 30px;
+      margin-bottom: 10px;
       border: 1px solid rgba(255, 255, 255, 0.08);
     }
     .counter-box .label {
@@ -132,6 +195,27 @@
       border-radius: 40px;
       line-height: 1.4;
     }
+    .loading-indicator {
+      font-size: 13px;
+      color: #8892b0;
+      text-align: center;
+      padding: 0 0 14px 0;
+      min-height: 28px;
+    }
+    .loading-indicator i {
+      margin-right: 6px;
+    }
+    .loading-indicator .retry-btn {
+      background: #f7b733;
+      color: #0b0e1a;
+      border: none;
+      padding: 4px 16px;
+      border-radius: 30px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-left: 8px;
+    }
+
     /* ===== PAYMENT METHODS ===== */
     .method-toggle {
       display: flex;
@@ -163,10 +247,8 @@
       color: #fff;
       box-shadow: 0 0 20px rgba(247, 183, 51, 0.1);
     }
-    .method-btn:hover {
-      border-color: #f7b73355;
-    }
-    /* ===== RECEIVER DETAILS (YOUR INFO WITH COPY) ===== */
+
+    /* ===== RECEIVER DETAILS ===== */
     .receiver-details {
       background: rgba(247, 183, 51, 0.06);
       border-left: 4px solid #f7b733;
@@ -234,6 +316,7 @@
       color: #fff;
       border-color: #2ecc71;
     }
+
     /* ===== FORM ===== */
     .form-group {
       margin-bottom: 20px;
@@ -307,7 +390,8 @@
     .file-input-wrapper input[type="file"]::file-selector-button:hover {
       background: #e5a82a;
     }
-    /* ===== SUBMIT BUTTON ===== */
+
+    /* ===== SUBMIT ===== */
     .btn-submit {
       width: 100%;
       padding: 18px;
@@ -326,11 +410,11 @@
       justify-content: center;
       gap: 12px;
     }
-    .btn-submit:hover {
+    .btn-submit:hover:not(:disabled) {
       transform: scale(1.02);
       box-shadow: 0 12px 32px rgba(247, 183, 51, 0.35);
     }
-    .btn-submit:active {
+    .btn-submit:active:not(:disabled) {
       transform: scale(0.97);
     }
     .btn-submit:disabled {
@@ -338,10 +422,8 @@
       cursor: not-allowed;
       transform: none !important;
     }
-    .btn-submit i {
-      font-size: 20px;
-    }
-    /* ===== ENTRY RESULT (DONE!) ===== */
+
+    /* ===== ENTRY RESULT ===== */
     .entry-result {
       margin-top: 24px;
       padding: 20px 20px;
@@ -389,16 +471,7 @@
       font-size: 13px;
       color: #8892b0;
     }
-    /* ===== LOADING SPINNER ===== */
-    .loading-indicator {
-      font-size: 14px;
-      color: #8892b0;
-      text-align: center;
-      padding: 4px 0 10px 0;
-    }
-    .loading-indicator i {
-      margin-right: 6px;
-    }
+
     /* ===== HELP / FOOTER ===== */
     .help-section {
       margin-top: 28px;
@@ -424,438 +497,516 @@
     .help-section a i {
       font-size: 18px;
     }
+
     /* ===== RESPONSIVE ===== */
     @media (max-width: 480px) {
-      .container { padding: 24px 16px; }
-      .counter-box .number { font-size: 22px; }
-      .method-btn { font-size: 13px; padding: 10px 4px; }
-      .btn-submit { font-size: 16px; padding: 16px; }
-      .receiver-row .value { font-size: 14px; }
-      .countdown-box .timer-unit .num { font-size: 22px; }
-      .countdown-box .timer-unit { min-width: 50px; padding: 4px 8px; }
+      .container {
+        padding: 24px 16px;
+      }
+      .counter-box .number {
+        font-size: 22px;
+      }
+      .method-btn {
+        font-size: 13px;
+        padding: 10px 4px;
+      }
+      .btn-submit {
+        font-size: 16px;
+        padding: 16px;
+      }
+      .receiver-row .value {
+        font-size: 14px;
+      }
+      .countdown-box .timer-unit .num {
+        font-size: 22px;
+      }
+      .countdown-box .timer-unit {
+        min-width: 50px;
+        padding: 4px 8px;
+      }
     }
   </style>
 </head>
 <body>
 
-<div class="container">
-  <!-- HEADER -->
-  <div class="header">
-    <h1>⚡ calekyzFX</h1>
-    <div class="sub"><i class="fas fa-users"></i> Pool Trading – Secure Entry</div>
-  </div>
+  <div class="container">
 
-  <!-- ===== COUNTDOWN TIMER ===== -->
-  <div class="countdown-box" id="countdownBox">
-    <div class="timer-label"><i class="far fa-clock"></i> Pool starts in</div>
-    <div class="timer-display" id="timerDisplay">
-      <div class="timer-unit">
-        <div class="num" id="timerDays">00</div>
-        <div class="label">Days</div>
-      </div>
-      <div class="timer-unit">
-        <div class="num" id="timerHours">00</div>
-        <div class="label">Hours</div>
-      </div>
-      <div class="timer-unit">
-        <div class="num" id="timerMinutes">00</div>
-        <div class="label">Min</div>
-      </div>
-      <div class="timer-unit">
-        <div class="num" id="timerSeconds">00</div>
-        <div class="label">Sec</div>
-      </div>
+    <!-- HEADER -->
+    <div class="header">
+      <h1>⚡ calekyzFX</h1>
+      <div class="sub"><i class="fas fa-users"></i> Pool Trading – Secure Entry</div>
     </div>
-    <div id="timerLiveMsg" style="display:none;" class="timer-live">🚀 Pool is LIVE! Join now.</div>
-  </div>
 
-  <!-- REMAINING SPOTS (LIVE) -->
-  <div class="counter-box">
-    <span class="label"><i class="fas fa-chair"></i> Spots remaining</span>
-    <span class="number" id="spotsLeft">Loading...</span>
-  </div>
-  <div class="loading-indicator" id="statusMsg"><i class="fas fa-spinner fa-pulse"></i> Connecting to live server...</div>
-
-  <!-- PAYMENT METHOD SELECTOR -->
-  <div class="method-toggle">
-    <button class="method-btn active" data-method="mpesa">
-      <i class="fas fa-phone-alt"></i> M‑Pesa
-    </button>
-    <button class="method-btn" data-method="binance">
-      <i class="fab fa-bitcoin"></i> Binance
-    </button>
-  </div>
-
-  <!-- ===== YOUR RECEIVER DETAILS (WITH COPY BUTTONS) ===== -->
-  <div id="receiverInfo" class="receiver-details">
-    <!-- M-Pesa Info (default) -->
-    <div id="mpesaReceiver">
-      <div class="label"><i class="fas fa-arrow-down"></i> Send payment to (M-Pesa)</div>
-      <div class="receiver-row">
-        <span class="value"><i class="fas fa-phone"></i> 0799045699</span>
-        <button class="copy-btn" data-copy="0799045699" title="Copy number">
-          <i class="fas fa-copy"></i>
-        </button>
-      </div>
-    </div>
-    <!-- Binance Info (hidden by default) -->
-    <div id="binanceReceiver" style="display:none;">
-      <div class="label"><i class="fas fa-arrow-down"></i> Send payment to (Binance)</div>
-      <div class="receiver-row">
-        <span class="value"><i class="fab fa-bitcoin"></i> TVvYRDdPyQCCg22onuaau56rS5PNP3Gx7s</span>
-        <button class="copy-btn" data-copy="TVvYRDdPyQCCg22onuaau56rS5PNP3Gx7s" title="Copy address">
-          <i class="fas fa-copy"></i>
-        </button>
-      </div>
-      <div class="receiver-row" style="margin-top: 8px;">
-        <span class="sub-value"><i class="fas fa-id-card"></i> Binance ID: 1067841957</span>
-        <button class="copy-btn" data-copy="1067841957" title="Copy ID">
-          <i class="fas fa-copy"></i>
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- FORM -->
-  <form id="entryForm" novalidate>
-    <!-- Dynamic proof input -->
-    <div id="paymentDetails">
-      <!-- M-Pesa proof -->
-      <div class="form-group" id="mpesaGroup">
-        <label><i class="fas fa-sms"></i> Your M‑Pesa confirmation message</label>
-        <textarea id="mpesaMessage" rows="3" placeholder="Paste the M‑Pesa message you received after sending ..."></textarea>
-        <div class="hint">Include the transaction code, amount, and sender name.</div>
-      </div>
-      <!-- Binance proof (hidden by default) -->
-      <div class="form-group" id="binanceGroup" style="display:none;">
-        <label><i class="fas fa-hash"></i> Your Binance Transaction ID</label>
-        <input type="text" id="binanceTx" placeholder="Paste your withdrawal/deposit TX ID">
-        <div class="hint">This is the ID you get after sending to the address above.</div>
+    <!-- ===== HOW POOL TRADING WORKS (Accordion) ===== -->
+    <div class="pool-info">
+      <button class="toggle" id="infoToggle" onclick="toggleInfo()">
+        <span><i class="fas fa-lightbulb"></i> How Pool Trading Works</span>
+        <span class="arrow" id="infoArrow"><i class="fas fa-chevron-down"></i></span>
+      </button>
+      <div class="content" id="infoContent">
+        <p><strong>What is a Trading Pool?</strong></p>
+        <p>Instead of trading alone, we combine our capital into one big pool. This gives us more power to enter higher-tier trades and share the profits proportionally.</p>
+        <ul>
+          <li><strong>Step 1:</strong> You send your entry fee to the official M-Pesa or Binance address above.</li>
+          <li><strong>Step 2:</strong> You get a <strong>unique Entry Code</strong> (e.g., <code>POOL-045</code>) – this tracks your spot.</li>
+          <li><strong>Step 3:</strong> Once <strong>100 people</strong> have joined, the pool officially kicks off on <strong>1st July 2026</strong>.</li>
+          <li><strong>Step 4:</strong> calekyzFX trades the combined capital. Every trade is tracked and transparent.</li>
+          <li><strong>Step 5:</strong> <strong>Profits</strong> (after fees) are shared <strong>proportionally</strong> back to every participant based on their entry size.</li>
+        </ul>
+        <p style="margin-top:6px;">✅ All entries are confirmed via WhatsApp for your security and record.</p>
       </div>
     </div>
 
-    <!-- Screenshot (optional) -->
-    <div class="form-group">
-      <label><i class="fas fa-camera"></i> Screenshot (optional)</label>
-      <div class="file-input-wrapper">
-        <input type="file" id="screenshot" accept="image/*">
+    <!-- ===== COUNTDOWN TIMER ===== -->
+    <div class="countdown-box" id="countdownBox">
+      <div class="timer-label"><i class="far fa-clock"></i> Pool starts in</div>
+      <div class="timer-display" id="timerDisplay">
+        <div class="timer-unit">
+          <div class="num" id="timerDays">00</div>
+          <div class="label">Days</div>
+        </div>
+        <div class="timer-unit">
+          <div class="num" id="timerHours">00</div>
+          <div class="label">Hours</div>
+        </div>
+        <div class="timer-unit">
+          <div class="num" id="timerMinutes">00</div>
+          <div class="label">Min</div>
+        </div>
+        <div class="timer-unit">
+          <div class="num" id="timerSeconds">00</div>
+          <div class="label">Sec</div>
+        </div>
       </div>
-      <div class="hint">Upload a screenshot (you will attach it manually in WhatsApp).</div>
+      <div id="timerLiveMsg" style="display:none;" class="timer-live">🚀 Pool is LIVE! Join now.</div>
     </div>
 
-    <!-- Submit -->
-    <button type="submit" class="btn-submit" id="submitBtn">
-      <i class="fab fa-whatsapp"></i> Submit & Send to WhatsApp
-    </button>
-  </form>
+    <!-- ===== REMAINING SPOTS (LIVE) ===== -->
+    <div class="counter-box">
+      <span class="label"><i class="fas fa-chair"></i> Spots remaining</span>
+      <span class="number" id="spotsLeft">⌛</span>
+    </div>
+    <div class="loading-indicator" id="statusMsg">
+      <i class="fas fa-spinner fa-pulse"></i> Connecting to live server...
+    </div>
 
-  <!-- ===== ENTRY RESULT (DONE!) ===== -->
-  <div class="entry-result" id="entryResult">
-    <div class="done-icon">✅</div>
-    <div class="done-title">DONE!</div>
-    <div class="code-label">Your entry number</div>
-    <div class="code" id="entryCode">POOL-001</div>
-    <div class="info">Remaining spots: <span id="spotsAfter">99</span></div>
-    <div class="footnote">We will confirm your entry via WhatsApp shortly.</div>
+    <!-- ===== PAYMENT METHOD SELECTOR ===== -->
+    <div class="method-toggle">
+      <button class="method-btn active" data-method="mpesa">
+        <i class="fas fa-phone-alt"></i> M‑Pesa
+      </button>
+      <button class="method-btn" data-method="binance">
+        <i class="fab fa-bitcoin"></i> Binance
+      </button>
+    </div>
+
+    <!-- ===== YOUR RECEIVER DETAILS ===== -->
+    <div id="receiverInfo" class="receiver-details">
+      <div id="mpesaReceiver">
+        <div class="label"><i class="fas fa-arrow-down"></i> Send payment to (M-Pesa)</div>
+        <div class="receiver-row">
+          <span class="value"><i class="fas fa-phone"></i> 0799045699</span>
+          <button class="copy-btn" data-copy="0799045699" title="Copy number">
+            <i class="fas fa-copy"></i>
+          </button>
+        </div>
+      </div>
+      <div id="binanceReceiver" style="display:none;">
+        <div class="label"><i class="fas fa-arrow-down"></i> Send payment to (Binance)</div>
+        <div class="receiver-row">
+          <span class="value"><i class="fab fa-bitcoin"></i> TVvYRDdPyQCCg22onuaau56rS5PNP3Gx7s</span>
+          <button class="copy-btn" data-copy="TVvYRDdPyQCCg22onuaau56rS5PNP3Gx7s" title="Copy address">
+            <i class="fas fa-copy"></i>
+          </button>
+        </div>
+        <div class="receiver-row" style="margin-top: 8px;">
+          <span class="sub-value"><i class="fas fa-id-card"></i> Binance ID: 1067841957</span>
+          <button class="copy-btn" data-copy="1067841957" title="Copy ID">
+            <i class="fas fa-copy"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== FORM ===== -->
+    <form id="entryForm" novalidate>
+      <div id="paymentDetails">
+        <div class="form-group" id="mpesaGroup">
+          <label><i class="fas fa-sms"></i> Your M‑Pesa confirmation message</label>
+          <textarea id="mpesaMessage" rows="3" placeholder="Paste the M‑Pesa message you received after sending ..."></textarea>
+          <div class="hint">Include the transaction code, amount, and sender name.</div>
+        </div>
+        <div class="form-group" id="binanceGroup" style="display:none;">
+          <label><i class="fas fa-hash"></i> Your Binance Transaction ID</label>
+          <input type="text" id="binanceTx" placeholder="Paste your withdrawal/deposit TX ID" />
+          <div class="hint">This is the ID you get after sending to the address above.</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label><i class="fas fa-camera"></i> Screenshot (optional)</label>
+        <div class="file-input-wrapper">
+          <input type="file" id="screenshot" accept="image/*" />
+        </div>
+        <div class="hint">Upload a screenshot (you will attach it manually in WhatsApp).</div>
+      </div>
+
+      <button type="submit" class="btn-submit" id="submitBtn">
+        <i class="fab fa-whatsapp"></i> Submit & Send to WhatsApp
+      </button>
+    </form>
+
+    <!-- ===== ENTRY RESULT ===== -->
+    <div class="entry-result" id="entryResult">
+      <div class="done-icon">✅</div>
+      <div class="done-title">DONE!</div>
+      <div class="code-label">Your entry number</div>
+      <div class="code" id="entryCode">POOL-001</div>
+      <div class="info">Remaining spots: <span id="spotsAfter">99</span></div>
+      <div class="footnote">We will confirm your entry via WhatsApp shortly.</div>
+    </div>
+
+    <!-- ===== HELP / FOOTER ===== -->
+    <div class="help-section">
+      <a href="https://wa.me/254101606189" target="_blank">
+        <i class="fab fa-whatsapp"></i> Help Center
+      </a>
+      <a href="#">
+        <i class="fas fa-envelope"></i> calekyzFX Support
+      </a>
+    </div>
   </div>
 
-  <!-- HELP / CONTACT -->
-  <div class="help-section">
-    <a href="https://wa.me/254101606189" target="_blank">
-      <i class="fab fa-whatsapp"></i> Help Center
-    </a>
-    <a href="#">
-      <i class="fas fa-envelope"></i> calekyzFX Support
-    </a>
-  </div>
-</div>
+  <script>
+    (function() {
+      "use strict";
 
-<script>
-  (function() {
-    "use strict";
+      // ============================================================
+      // 1. 🔥 FIREBASE CONFIG (YOURS PASTED HERE)
+      // ============================================================
+      const FIREBASE_CONFIG = {
+        apiKey: "AIzaSyD9LNXH57bkQSDXCR-1Ey4zfWPlXcQljNs",
+        authDomain: "pooltrade-8bea9.firebaseapp.com",
+        databaseURL: "https://pooltrade-8bea9-default-rtdb.firebaseio.com",
+        projectId: "pooltrade-8bea9",
+        storageBucket: "pooltrade-8bea9.firebasestorage.app",
+        messagingSenderId: "131969808350",
+        appId: "1:131969808350:web:b68bfe3d97e72144facf4f"
+      };
 
-    // ======================================================
-    // 1. 🔥 FIREBASE CONFIG (YOURS PASTED HERE)
-    // ======================================================
-    const FIREBASE_CONFIG = {
-      apiKey: "AIzaSyD9LNXH57bkQSDXCR-1Ey4zfWPlXcQljNs",
-      authDomain: "pooltrade-8bea9.firebaseapp.com",
-      databaseURL: "https://pooltrade-8bea9-default-rtdb.firebaseio.com",
-      projectId: "pooltrade-8bea9",
-      storageBucket: "pooltrade-8bea9.firebasestorage.app",
-      messagingSenderId: "131969808350",
-      appId: "1:131969808350:web:b68bfe3d97e72144facf4f"
-    };
+      // ============================================================
+      // 2. CONSTANTS
+      // ============================================================
+      const TOTAL_SPOTS = 100;
+      const WHATSAPP_NUMBER = '254101606189';
+      const POOL_NAME = 'calekyzFX Pool';
 
-    // ======================================================
-    // 2. INIT FIREBASE
-    // ======================================================
-    firebase.initializeApp(FIREBASE_CONFIG);
-    const dbRef = firebase.database().ref('/pool/remaining');
+      // ============================================================
+      // 3. DOM REFS
+      // ============================================================
+      const spotsLeftEl = document.getElementById('spotsLeft');
+      const spotsAfterEl = document.getElementById('spotsAfter');
+      const entryCodeEl = document.getElementById('entryCode');
+      const entryResultEl = document.getElementById('entryResult');
+      const form = document.getElementById('entryForm');
+      const submitBtn = document.getElementById('submitBtn');
+      const statusMsg = document.getElementById('statusMsg');
 
-    // ======================================================
-    // 3. CONSTANTS
-    // ======================================================
-    const TOTAL_SPOTS = 100;
-    const WHATSAPP_NUMBER = '254101606189';
-    const POOL_NAME = 'calekyzFX Pool';
-    const DB_PATH = '/pool/remaining';
+      const mpesaGroup = document.getElementById('mpesaGroup');
+      const binanceGroup = document.getElementById('binanceGroup');
+      const mpesaReceiver = document.getElementById('mpesaReceiver');
+      const binanceReceiver = document.getElementById('binanceReceiver');
+      const mpesaMsg = document.getElementById('mpesaMessage');
+      const binanceTx = document.getElementById('binanceTx');
+      const screenshotInput = document.getElementById('screenshot');
+      const methodBtns = document.querySelectorAll('.method-btn');
 
-    // ======================================================
-    // 4. COUNTDOWN TIMER (Target: July 1, 2026, Midnight EAT)
-    // ======================================================
-    const TARGET_DATE = new Date('2026-07-01T00:00:00+03:00').getTime(); // Kenya Time (GMT+3)
+      let currentMethod = 'mpesa';
+      let currentRemaining = TOTAL_SPOTS;
+      let firebaseReady = false;
 
-    function updateTimer() {
-      const now = Date.now();
-      const diff = TARGET_DATE - now;
+      // ============================================================
+      // 4. COUNTDOWN TIMER (Target: July 1, 2026, Midnight EAT)
+      // ============================================================
+      const TARGET_DATE = new Date('2026-07-01T00:00:00+03:00').getTime();
 
-      const timerDisplay = document.getElementById('timerDisplay');
-      const liveMsg = document.getElementById('timerLiveMsg');
+      function updateTimer() {
+        const now = Date.now();
+        const diff = TARGET_DATE - now;
+        const timerDisplay = document.getElementById('timerDisplay');
+        const liveMsg = document.getElementById('timerLiveMsg');
 
-      if (diff <= 0) {
-        // Timer is finished
-        timerDisplay.style.display = 'none';
-        liveMsg.style.display = 'block';
-        return;
-      }
-
-      timerDisplay.style.display = 'flex';
-      liveMsg.style.display = 'none';
-
-      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-      document.getElementById('timerDays').textContent = String(days).padStart(2, '0');
-      document.getElementById('timerHours').textContent = String(hours).padStart(2, '0');
-      document.getElementById('timerMinutes').textContent = String(minutes).padStart(2, '0');
-      document.getElementById('timerSeconds').textContent = String(seconds).padStart(2, '0');
-    }
-
-    // Update every second
-    updateTimer();
-    setInterval(updateTimer, 1000);
-
-    // ======================================================
-    // 5. DOM REFS
-    // ======================================================
-    const spotsLeftEl = document.getElementById('spotsLeft');
-    const spotsAfterEl = document.getElementById('spotsAfter');
-    const entryCodeEl = document.getElementById('entryCode');
-    const entryResultEl = document.getElementById('entryResult');
-    const form = document.getElementById('entryForm');
-    const submitBtn = document.getElementById('submitBtn');
-    const statusMsg = document.getElementById('statusMsg');
-
-    const mpesaGroup = document.getElementById('mpesaGroup');
-    const binanceGroup = document.getElementById('binanceGroup');
-    const mpesaReceiver = document.getElementById('mpesaReceiver');
-    const binanceReceiver = document.getElementById('binanceReceiver');
-    
-    const mpesaMsg = document.getElementById('mpesaMessage');
-    const binanceTx = document.getElementById('binanceTx');
-    const screenshotInput = document.getElementById('screenshot');
-    const methodBtns = document.querySelectorAll('.method-btn');
-
-    let currentMethod = 'mpesa';
-    let currentRemaining = TOTAL_SPOTS;
-
-    // ======================================================
-    // 6. COPY BUTTONS LOGIC
-    // ======================================================
-    document.querySelectorAll('.copy-btn').forEach(btn => {
-      btn.addEventListener('click', function(e) {
-        e.stopPropagation();
-        const text = this.dataset.copy;
-        if (!text) return;
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(text).then(() => {
-            showCopiedFeedback(this);
-          }).catch(() => fallbackCopy(text, this));
-        } else {
-          fallbackCopy(text, this);
+        if (diff <= 0) {
+          timerDisplay.style.display = 'none';
+          liveMsg.style.display = 'block';
+          return;
         }
-      });
-    });
+        timerDisplay.style.display = 'flex';
+        liveMsg.style.display = 'none';
 
-    function fallbackCopy(text, btn) {
-      const textArea = document.createElement('textarea');
-      textArea.value = text;
-      textArea.style.position = 'fixed';
-      textArea.style.opacity = '0';
-      document.body.appendChild(textArea);
-      textArea.select();
-      try {
-        document.execCommand('copy');
-        showCopiedFeedback(btn);
-      } catch (err) {
-        alert('Could not copy. Please select and copy the text manually.');
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+        document.getElementById('timerDays').textContent = String(days).padStart(2, '0');
+        document.getElementById('timerHours').textContent = String(hours).padStart(2, '0');
+        document.getElementById('timerMinutes').textContent = String(minutes).padStart(2, '0');
+        document.getElementById('timerSeconds').textContent = String(seconds).padStart(2, '0');
       }
-      document.body.removeChild(textArea);
-    }
+      updateTimer();
+      setInterval(updateTimer, 1000);
 
-    function showCopiedFeedback(btn) {
-      const icon = btn.querySelector('i');
-      const originalClass = icon.className;
-      icon.className = 'fas fa-check';
-      btn.classList.add('copied');
-      setTimeout(() => {
-        icon.className = originalClass;
-        btn.classList.remove('copied');
-      }, 2000);
-    }
+      // ============================================================
+      // 5. ACCORDION (Pool Info)
+      // ============================================================
+      window.toggleInfo = function() {
+        const content = document.getElementById('infoContent');
+        const arrow = document.getElementById('infoArrow');
+        content.classList.toggle('open');
+        arrow.classList.toggle('open');
+      };
 
-    // ======================================================
-    // 7. METHOD TOGGLE
-    // ======================================================
-    methodBtns.forEach(btn => {
-      btn.addEventListener('click', function() {
-        methodBtns.forEach(b => b.classList.remove('active'));
-        this.classList.add('active');
-        currentMethod = this.dataset.method;
+      // ============================================================
+      // 6. COPY BUTTONS
+      // ============================================================
+      document.querySelectorAll('.copy-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          const text = this.dataset.copy;
+          if (!text) return;
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(() => showCopiedFeedback(this))
+              .catch(() => fallbackCopy(text, this));
+          } else {
+            fallbackCopy(text, this);
+          }
+        });
+      });
+
+      function fallbackCopy(text, btn) {
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        textArea.style.position = 'fixed';
+        textArea.style.opacity = '0';
+        document.body.appendChild(textArea);
+        textArea.select();
+        try {
+          document.execCommand('copy');
+          showCopiedFeedback(btn);
+        } catch (err) {
+          alert('Could not copy. Please select and copy the text manually.');
+        }
+        document.body.removeChild(textArea);
+      }
+
+      function showCopiedFeedback(btn) {
+        const icon = btn.querySelector('i');
+        const originalClass = icon.className;
+        icon.className = 'fas fa-check';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          icon.className = originalClass;
+          btn.classList.remove('copied');
+        }, 2000);
+      }
+
+      // ============================================================
+      // 7. METHOD TOGGLE
+      // ============================================================
+      methodBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+          methodBtns.forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          currentMethod = this.dataset.method;
+          if (currentMethod === 'mpesa') {
+            mpesaReceiver.style.display = 'block';
+            binanceReceiver.style.display = 'none';
+            mpesaGroup.style.display = 'block';
+            binanceGroup.style.display = 'none';
+          } else {
+            mpesaReceiver.style.display = 'none';
+            binanceReceiver.style.display = 'block';
+            mpesaGroup.style.display = 'none';
+            binanceGroup.style.display = 'block';
+          }
+        });
+      });
+
+      // ============================================================
+      // 8. FIREBASE INIT + LIVE COUNTER
+      // ============================================================
+      let dbRef = null;
+      let loadTimeout = null;
+
+      function initFirebase() {
+        try {
+          firebase.initializeApp(FIREBASE_CONFIG);
+          dbRef = firebase.database().ref('/pool/remaining');
+          startListener();
+        } catch (e) {
+          statusMsg.innerHTML = '⚠️ Firebase init error: ' + e.message;
+          spotsLeftEl.textContent = '❌';
+        }
+      }
+
+      function startListener() {
+        // Set a timeout: if we don't get data in 8 seconds, show a manual refresh option.
+        loadTimeout = setTimeout(() => {
+          if (!firebaseReady) {
+            statusMsg.innerHTML =
+              '⚠️ Still loading... Check your Firebase Rules (set to "test mode") or <button class="retry-btn" onclick="window.location.reload()">Retry</button>';
+            spotsLeftEl.textContent = '⏳';
+          }
+        }, 8000);
+
+        dbRef.on('value', (snapshot) => {
+          clearTimeout(loadTimeout);
+          const val = snapshot.val();
+
+          if (val !== null && val !== undefined) {
+            currentRemaining = val;
+            spotsLeftEl.textContent = val;
+            firebaseReady = true;
+            statusMsg.innerHTML = '<i class="fas fa-check-circle" style="color:#2ecc71;"></i> Live & synced';
+            statusMsg.style.color = '#2ecc71';
+
+            if (val <= 0) {
+              submitBtn.disabled = true;
+              submitBtn.innerHTML = '<i class="fas fa-check-circle"></i> Pool Full';
+              submitBtn.style.opacity = '0.7';
+            } else {
+              submitBtn.disabled = false;
+              submitBtn.innerHTML = '<i class="fab fa-whatsapp"></i> Submit & Send to WhatsApp';
+              submitBtn.style.opacity = '1';
+            }
+          } else {
+            // Database is empty, initialize it.
+            dbRef.set(TOTAL_SPOTS).then(() => {
+              currentRemaining = TOTAL_SPOTS;
+              spotsLeftEl.textContent = TOTAL_SPOTS;
+              firebaseReady = true;
+              statusMsg.innerHTML = '<i class="fas fa-check-circle" style="color:#2ecc71;"></i> Live & synced';
+            }).catch(err => {
+              statusMsg.innerHTML = '⚠️ Permission denied. Set Firebase Rules to "test mode".';
+              spotsLeftEl.textContent = '🚫';
+              console.error(err);
+            });
+          }
+        }, (error) => {
+          clearTimeout(loadTimeout);
+          statusMsg.innerHTML = '⚠️ Connection error: ' + error.message + '. <button class="retry-btn" onclick="window.location.reload()">Retry</button>';
+          spotsLeftEl.textContent = '❌';
+          console.error('Firebase read error:', error);
+        });
+      }
+
+      // Start Firebase
+      initFirebase();
+
+      // ============================================================
+      // 9. GENERATE ENTRY CODE
+      // ============================================================
+      function generateEntryCode(newRemaining) {
+        const enteredCount = TOTAL_SPOTS - newRemaining;
+        const padded = String(enteredCount).padStart(3, '0');
+        return `POOL-${padded}`;
+      }
+
+      // ============================================================
+      // 10. SUBMIT HANDLER (ATOMIC TRANSACTION)
+      // ============================================================
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        if (!firebaseReady) {
+          alert('⏳ Please wait for the connection to sync. Refresh if it takes too long.');
+          return;
+        }
+
+        if (currentRemaining <= 0) {
+          alert('❌ Sorry, the pool is full (100 participants reached).');
+          return;
+        }
+
+        let paymentText = '';
         if (currentMethod === 'mpesa') {
-          mpesaReceiver.style.display = 'block';
-          binanceReceiver.style.display = 'none';
-          mpesaGroup.style.display = 'block';
-          binanceGroup.style.display = 'none';
+          const msg = mpesaMsg.value.trim();
+          if (!msg) {
+            alert('Please paste your M‑Pesa confirmation message.');
+            mpesaMsg.focus();
+            return;
+          }
+          paymentText = `M-Pesa Msg: ${msg}`;
         } else {
-          mpesaReceiver.style.display = 'none';
-          binanceReceiver.style.display = 'block';
-          mpesaGroup.style.display = 'none';
-          binanceGroup.style.display = 'block';
+          const tx = binanceTx.value.trim();
+          if (!tx) {
+            alert('Please paste your Binance Transaction ID.');
+            binanceTx.focus();
+            return;
+          }
+          paymentText = `Binance TX: ${tx}`;
         }
+
+        let screenshotInfo = '';
+        if (screenshotInput.files.length > 0) {
+          screenshotInfo = ` (Screenshot: ${screenshotInput.files[0].name} - attach manually)`;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Processing...';
+
+        dbRef.transaction((currentValue) => {
+          if (currentValue === null) return TOTAL_SPOTS;
+          if (currentValue <= 0) return; // abort
+          return currentValue - 1;
+        }, (error, committed, snapshot) => {
+          if (error) {
+            alert('❌ Server error. Please refresh and try again.');
+            console.error(error);
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fab fa-whatsapp"></i> Submit & Send to WhatsApp';
+            return;
+          }
+
+          if (!committed) {
+            alert('❌ Sorry, the pool just filled up! No more spots.');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-check-circle"></i> Pool Full';
+            submitBtn.style.opacity = '0.7';
+            return;
+          }
+
+          const newRemaining = snapshot.val();
+          const entryCode = generateEntryCode(newRemaining);
+
+          entryCodeEl.textContent = entryCode;
+          spotsAfterEl.textContent = newRemaining;
+          entryResultEl.classList.add('show');
+          entryResultEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+          const message = `🎯 *${POOL_NAME} Entry*%0A` +
+            `🔹 *Entry Code:* ${entryCode}%0A` +
+            `💳 *Method:* ${currentMethod.toUpperCase()}%0A` +
+            `📝 *Proof:* ${paymentText}%0A` +
+            `📸 ${screenshotInfo || 'No screenshot attached'}`;
+
+          window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${message}`, '_blank');
+
+          screenshotInput.value = '';
+          if (newRemaining > 0) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fab fa-whatsapp"></i> Submit & Send to WhatsApp';
+          } else {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-check-circle"></i> Pool Full';
+            submitBtn.style.opacity = '0.7';
+          }
+        });
       });
-    });
 
-    // ======================================================
-    // 8. LIVE COUNTER (FIREBASE LISTENER)
-    // ======================================================
-    dbRef.on('value', (snapshot) => {
-      const val = snapshot.val();
-      if (val !== null && val !== undefined) {
-        currentRemaining = val;
-        spotsLeftEl.textContent = val;
-        statusMsg.innerHTML = '<i class="fas fa-check-circle" style="color:#2ecc71;"></i> Live & synced';
-        statusMsg.style.color = '#2ecc71';
-
-        if (val <= 0) {
-          submitBtn.disabled = true;
-          submitBtn.innerHTML = '<i class="fas fa-check-circle"></i> Pool Full';
-          submitBtn.style.opacity = '0.7';
-        } else {
-          submitBtn.disabled = false;
-          submitBtn.innerHTML = '<i class="fab fa-whatsapp"></i> Submit & Send to WhatsApp';
-          submitBtn.style.opacity = '1';
-        }
-      } else {
-        dbRef.set(TOTAL_SPOTS).catch(err => console.error(err));
-        spotsLeftEl.textContent = TOTAL_SPOTS;
-      }
-    }, (error) => {
-      statusMsg.innerHTML = '⚠️ Error connecting to server. Please refresh.';
-      console.error('Firebase read error:', error);
-    });
-
-    // ======================================================
-    // 9. GENERATE ENTRY CODE
-    // ======================================================
-    function generateEntryCode(newRemaining) {
-      const enteredCount = TOTAL_SPOTS - newRemaining;
-      const padded = String(enteredCount).padStart(3, '0');
-      return `POOL-${padded}`;
-    }
-
-    // ======================================================
-    // 10. SUBMIT HANDLER (FIREBASE TRANSACTION)
-    // ======================================================
-    form.addEventListener('submit', function(e) {
-      e.preventDefault();
-
-      if (currentRemaining <= 0) {
-        alert('❌ Sorry, the pool is full (100 participants reached).');
-        return;
-      }
-
-      let paymentText = '';
-      if (currentMethod === 'mpesa') {
-        const msg = mpesaMsg.value.trim();
-        if (!msg) {
-          alert('Please paste your M‑Pesa confirmation message.');
-          mpesaMsg.focus();
-          return;
-        }
-        paymentText = `M-Pesa Msg: ${msg}`;
-      } else {
-        const tx = binanceTx.value.trim();
-        if (!tx) {
-          alert('Please paste your Binance Transaction ID.');
-          binanceTx.focus();
-          return;
-        }
-        paymentText = `Binance TX: ${tx}`;
-      }
-
-      let screenshotInfo = '';
-      if (screenshotInput.files.length > 0) {
-        screenshotInfo = ` (Screenshot: ${screenshotInput.files[0].name} - attach manually)`;
-      }
-
-      submitBtn.disabled = true;
-      submitBtn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Processing...';
-
-      dbRef.transaction((currentValue) => {
-        if (currentValue === null) return TOTAL_SPOTS;
-        if (currentValue <= 0) return;
-        return currentValue - 1;
-      }, (error, committed, snapshot) => {
-        if (error) {
-          alert('❌ Server error. Please refresh and try again.');
-          console.error(error);
-          submitBtn.disabled = false;
-          submitBtn.innerHTML = '<i class="fab fa-whatsapp"></i> Submit & Send to WhatsApp';
-          return;
-        }
-
-        if (!committed) {
-          alert('❌ Sorry, the pool just filled up! No more spots.');
-          submitBtn.disabled = true;
-          submitBtn.innerHTML = '<i class="fas fa-check-circle"></i> Pool Full';
-          submitBtn.style.opacity = '0.7';
-          return;
-        }
-
-        const newRemaining = snapshot.val();
-        const entryCode = generateEntryCode(newRemaining);
-
-        entryCodeEl.textContent = entryCode;
-        spotsAfterEl.textContent = newRemaining;
-        entryResultEl.classList.add('show');
-        entryResultEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-        const message = `🎯 *${POOL_NAME} Entry*%0A` +
-                        `🔹 *Entry Code:* ${entryCode}%0A` +
-                        `💳 *Method:* ${currentMethod.toUpperCase()}%0A` +
-                        `📝 *Proof:* ${paymentText}%0A` +
-                        `📸 ${screenshotInfo || 'No screenshot attached'}`;
-
-        window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${message}`, '_blank');
-
-        screenshotInput.value = '';
-        if (newRemaining > 0) {
-          submitBtn.disabled = false;
-          submitBtn.innerHTML = '<i class="fab fa-whatsapp"></i> Submit & Send to WhatsApp';
-        } else {
-          submitBtn.disabled = true;
-          submitBtn.innerHTML = '<i class="fas fa-check-circle"></i> Pool Full';
-          submitBtn.style.opacity = '0.7';
-        }
-      });
-    });
-
-  })();
-</script>
+    })();
+  </script>
 
 </body>
 </html>
