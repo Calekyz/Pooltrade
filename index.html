@@ -3,21 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>calekyzFX Pool Trading</title>
-  <!-- Font Awesome Icons -->
+  <title>calekyzFX – EA & Deriv Solutions</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-  <!-- Firebase SDKs (Compat) -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js">
-  </script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js">
-  </script>
   <style>
-    /* ===== RESET & BASE ===== */
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
+
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: linear-gradient(135deg, #0b0e1a 0%, #1a1f33 100%);
@@ -25,503 +19,198 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 20px;
+      padding: 24px;
     }
+
     .container {
-      max-width: 560px;
+      max-width: 640px;
       width: 100%;
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-radius: 32px;
-      padding: 32px 28px;
+      background: rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-radius: 40px;
+      padding: 36px 28px;
       box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.06);
       color: #f0f0f0;
     }
 
-    /* ===== HEADER ===== */
+    /* Header */
     .header {
       text-align: center;
-      margin-bottom: 20px;
+      margin-bottom: 32px;
     }
-    .header h1 {
-      font-size: 28px;
-      font-weight: 700;
+    .header .logo {
+      font-size: 32px;
+      font-weight: 800;
       background: linear-gradient(to right, #f7b733, #fc4a1a);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
-    .header .sub {
-      font-size: 14px;
+    .header .tagline {
+      font-size: 15px;
       color: #aab;
-      margin-top: 4px;
+      margin-top: 6px;
+      letter-spacing: 0.3px;
     }
-    .header .sub i {
+    .header .tagline i {
+      color: #f7b733;
       margin-right: 6px;
-      color: #f7b733;
     }
 
-    /* ===== POOL INFO ACCORDION ===== */
-    .pool-info {
-      background: rgba(255, 255, 255, 0.04);
-      border-radius: 16px;
-      margin-bottom: 22px;
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      overflow: hidden;
-    }
-    .pool-info .toggle {
-      width: 100%;
-      background: transparent;
-      border: none;
-      color: #f0f0f0;
-      padding: 14px 18px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
+    /* Offer Cards */
+    .offer-grid {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      transition: background 0.2s;
-    }
-    .pool-info .toggle:hover {
-      background: rgba(247, 183, 51, 0.05);
-    }
-    .pool-info .toggle i {
-      color: #f7b733;
-      margin-right: 10px;
-    }
-    .pool-info .toggle .arrow {
-      transition: transform 0.3s;
-    }
-    .pool-info .toggle .arrow.open {
-      transform: rotate(180deg);
-    }
-    .pool-info .content {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.4s ease, padding 0.3s ease;
-      padding: 0 18px;
-      color: #c8d0e0;
-      font-size: 14px;
-      line-height: 1.6;
-    }
-    .pool-info .content.open {
-      max-height: 500px;
-      padding: 0 18px 18px 18px;
-    }
-    .pool-info .content p {
-      margin-bottom: 8px;
-    }
-    .pool-info .content ul {
-      padding-left: 20px;
-      margin-bottom: 6px;
-    }
-    .pool-info .content ul li {
-      margin-bottom: 4px;
-    }
-    .pool-info .content strong {
-      color: #f7b733;
+      flex-direction: column;
+      gap: 24px;
+      margin-bottom: 32px;
     }
 
-    /* ===== COUNTDOWN TIMER ===== */
-    .countdown-box {
+    .offer-card {
       background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(247, 183, 51, 0.2);
-      border-radius: 16px;
-      padding: 16px 12px;
-      margin-bottom: 24px;
-      text-align: center;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 28px;
+      padding: 28px 24px;
+      transition: transform 0.2s, border-color 0.2s;
+      position: relative;
+      overflow: hidden;
     }
-    .countdown-box .timer-label {
+    .offer-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(247, 183, 51, 0.3);
+    }
+    .offer-card .badge {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: rgba(247, 183, 51, 0.15);
+      color: #f7b733;
       font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      color: #8892b0;
-      margin-bottom: 6px;
-    }
-    .countdown-box .timer-display {
-      display: flex;
-      justify-content: center;
-      gap: 12px;
       font-weight: 700;
+      padding: 4px 14px;
+      border-radius: 40px;
+      border: 1px solid rgba(247, 183, 51, 0.2);
+      letter-spacing: 0.5px;
     }
-    .countdown-box .timer-unit {
-      background: rgba(0, 0, 0, 0.3);
-      padding: 6px 12px;
-      border-radius: 10px;
-      min-width: 60px;
+    .offer-card .icon {
+      font-size: 36px;
+      margin-bottom: 12px;
+      display: inline-block;
     }
-    .countdown-box .timer-unit .num {
-      font-size: 28px;
-      color: #f7b733;
-      line-height: 1.2;
-    }
-    .countdown-box .timer-unit .label {
-      font-size: 10px;
-      color: #8892b0;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-    .countdown-box .timer-live {
+    .offer-card h3 {
       font-size: 22px;
       font-weight: 700;
-      color: #2ecc71;
+      margin-bottom: 8px;
+      color: #fff;
     }
-
-    /* ===== COUNTER ===== */
-    .counter-box {
-      background: rgba(255, 255, 255, 0.06);
-      border-radius: 60px;
-      padding: 14px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 10px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
+    .offer-card .highlight {
+      color: #f7b733;
     }
-    .counter-box .label {
+    .offer-card p {
       font-size: 15px;
-      font-weight: 500;
-      color: #ccd;
-    }
-    .counter-box .number {
-      font-size: 28px;
-      font-weight: 700;
-      color: #f7b733;
-      background: rgba(247, 183, 51, 0.12);
-      padding: 0 16px;
-      border-radius: 40px;
-      line-height: 1.4;
-    }
-    .loading-indicator {
-      font-size: 13px;
-      color: #8892b0;
-      text-align: center;
-      padding: 0 0 14px 0;
-      min-height: 28px;
-    }
-    .loading-indicator i {
-      margin-right: 6px;
-    }
-    .loading-indicator .retry-btn {
-      background: #f7b733;
-      color: #0b0e1a;
-      border: none;
-      padding: 4px 16px;
-      border-radius: 30px;
-      font-weight: 600;
-      cursor: pointer;
-      margin-left: 8px;
-    }
-
-    /* ===== PAYMENT METHODS ===== */
-    .method-toggle {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 24px;
-    }
-    .method-btn {
-      flex: 1;
-      padding: 12px 6px;
-      border: 2px solid rgba(255, 255, 255, 0.15);
-      border-radius: 16px;
-      background: transparent;
-      color: #b0b8cc;
-      font-weight: 600;
-      font-size: 15px;
-      cursor: pointer;
-      transition: all 0.25s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
-    .method-btn i {
-      font-size: 20px;
-    }
-    .method-btn.active {
-      border-color: #f7b733;
-      background: rgba(247, 183, 51, 0.08);
-      color: #fff;
-      box-shadow: 0 0 20px rgba(247, 183, 51, 0.1);
-    }
-
-    /* ===== RECEIVER DETAILS ===== */
-    .receiver-details {
-      background: rgba(247, 183, 51, 0.06);
-      border-left: 4px solid #f7b733;
-      padding: 16px 18px;
-      border-radius: 14px;
-      margin-bottom: 22px;
-    }
-    .receiver-details .label {
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: #8892b0;
-      margin-bottom: 10px;
-    }
-    .receiver-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin-top: 6px;
-    }
-    .receiver-row .value {
-      font-size: 16px;
-      font-weight: 700;
-      color: #fff;
-      word-break: break-all;
-    }
-    .receiver-row .value i {
-      color: #f7b733;
-      margin-right: 10px;
-      width: 20px;
-    }
-    .receiver-row .sub-value {
-      font-size: 14px;
-      color: #b0b8cc;
-      word-break: break-all;
-    }
-    .receiver-row .sub-value i {
-      color: #f7b733;
-      margin-right: 8px;
-      width: 20px;
-    }
-    .copy-btn {
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      color: #b0b8cc;
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      cursor: pointer;
-      transition: all 0.2s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-      flex-shrink: 0;
-    }
-    .copy-btn:hover {
-      background: #f7b733;
-      color: #0b0e1a;
-      border-color: #f7b733;
-    }
-    .copy-btn.copied {
-      background: #2ecc71;
-      color: #fff;
-      border-color: #2ecc71;
-    }
-
-    /* ===== FORM ===== */
-    .form-group {
-      margin-bottom: 20px;
-    }
-    .form-group label {
-      display: block;
-      font-size: 14px;
-      font-weight: 500;
       color: #c8d0e0;
+      line-height: 1.6;
       margin-bottom: 6px;
     }
-    .form-group label i {
-      margin-right: 6px;
-      color: #f7b733;
-    }
-    .form-group input,
-    .form-group textarea {
-      width: 100%;
-      padding: 14px 16px;
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.10);
-      border-radius: 16px;
-      color: #fff;
-      font-size: 15px;
-      transition: border 0.2s;
-      outline: none;
-      resize: vertical;
-    }
-    .form-group input:focus,
-    .form-group textarea:focus {
-      border-color: #f7b733;
-      background: rgba(255, 255, 255, 0.08);
-    }
-    .form-group input::placeholder,
-    .form-group textarea::placeholder {
-      color: #7a82a0;
-    }
-    .form-group .hint {
-      font-size: 12px;
-      color: #7a82a0;
-      margin-top: 6px;
-    }
-
-    /* ----- Currency Converter ----- */
-    .converter-box {
-      background: rgba(255, 255, 255, 0.04);
-      border-radius: 12px;
-      padding: 14px 16px;
-      margin-bottom: 16px;
-      border: 1px solid rgba(247, 183, 51, 0.15);
-    }
-    .converter-box .convert-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-    .converter-box .convert-row input {
-      flex: 1;
-      min-width: 100px;
-      padding: 10px 14px;
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.10);
-      border-radius: 12px;
-      color: #fff;
-      font-size: 15px;
-      outline: none;
-      transition: border 0.2s;
-    }
-    .converter-box .convert-row input:focus {
-      border-color: #f7b733;
-      background: rgba(255, 255, 255, 0.08);
-    }
-    .converter-box .convert-row input::placeholder {
-      color: #7a82a0;
-    }
-    .converter-box .convert-result {
-      font-size: 18px;
+    .offer-card .price-tag {
+      display: inline-block;
+      background: rgba(247, 183, 51, 0.1);
+      border: 1px solid #f7b733;
+      border-radius: 60px;
+      padding: 6px 20px;
       font-weight: 700;
+      font-size: 18px;
       color: #f7b733;
-      background: rgba(247, 183, 51, 0.08);
-      padding: 6px 16px;
-      border-radius: 30px;
-      white-space: nowrap;
+      margin-top: 10px;
     }
-    .converter-box .convert-note {
-      font-size: 12px;
-      color: #8892b0;
-      margin-top: 6px;
+    .offer-card .price-tag small {
+      font-size: 14px;
+      font-weight: 400;
+      color: #aab;
+      margin-left: 6px;
     }
-
-    .file-input-wrapper {
+    .offer-card .feature-list {
+      list-style: none;
+      margin-top: 16px;
+      padding: 0;
+    }
+    .offer-card .feature-list li {
+      font-size: 14px;
+      color: #b0b8cc;
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
       display: flex;
       align-items: center;
-      gap: 12px;
-      background: rgba(255, 255, 255, 0.04);
-      padding: 6px 16px 6px 6px;
-      border-radius: 60px;
-      border: 1px dashed rgba(255, 255, 255, 0.15);
+      gap: 10px;
     }
-    .file-input-wrapper input[type="file"] {
-      background: transparent;
-      border: none;
-      padding: 8px 0;
-      color: #b0b8cc;
-      font-size: 13px;
-      flex: 1;
+    .offer-card .feature-list li:last-child {
+      border-bottom: none;
     }
-    .file-input-wrapper input[type="file"]::file-selector-button {
-      background: #f7b733;
-      border: none;
-      padding: 8px 18px;
-      border-radius: 40px;
-      font-weight: 600;
-      color: #0b0e1a;
-      cursor: pointer;
-      margin-right: 10px;
-      transition: background 0.2s;
+    .offer-card .feature-list i {
+      color: #2ecc71;
+      width: 20px;
+      text-align: center;
+      font-size: 14px;
     }
-    .file-input-wrapper input[type="file"]::file-selector-button:hover {
-      background: #e5a82a;
+    .offer-card .feature-list .warn-i {
+      color: #f7b733;
     }
 
-    /* ===== SUBMIT ===== */
-    .btn-submit {
+    /* CTA Button */
+    .btn-telegram {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
       width: 100%;
-      padding: 18px;
+      padding: 18px 24px;
+      background: linear-gradient(to right, #0088cc, #005f99);
       border: none;
       border-radius: 60px;
-      background: linear-gradient(to right, #f7b733, #fc4a1a);
-      color: #0b0e1a;
+      color: #fff;
       font-weight: 700;
       font-size: 18px;
       cursor: pointer;
       transition: transform 0.15s, box-shadow 0.2s;
-      box-shadow: 0 8px 24px rgba(247, 183, 51, 0.25);
-      margin-top: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
+      box-shadow: 0 8px 24px rgba(0, 136, 204, 0.25);
+      text-decoration: none;
     }
-    .btn-submit:hover:not(:disabled) {
+    .btn-telegram:hover {
       transform: scale(1.02);
-      box-shadow: 0 12px 32px rgba(247, 183, 51, 0.35);
+      box-shadow: 0 12px 32px rgba(0, 136, 204, 0.4);
     }
-    .btn-submit:active:not(:disabled) {
-      transform: scale(0.97);
-    }
-    .btn-submit:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      transform: none !important;
+    .btn-telegram i {
+      font-size: 22px;
     }
 
-    /* ===== ENTRY RESULT ===== */
-    .entry-result {
-      margin-top: 24px;
-      padding: 20px 20px;
-      background: rgba(46, 204, 113, 0.08);
+    .channel-box {
+      margin-top: 20px;
+      background: rgba(255, 255, 255, 0.03);
       border-radius: 20px;
-      border: 1px solid rgba(46, 204, 113, 0.3);
-      display: none;
+      padding: 16px 20px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
       text-align: center;
     }
-    .entry-result.show {
-      display: block;
-    }
-    .entry-result .done-icon {
-      font-size: 40px;
-      margin-bottom: 2px;
-    }
-    .entry-result .done-title {
-      font-weight: 700;
-      font-size: 24px;
-      color: #2ecc71;
-      letter-spacing: 1px;
-    }
-    .entry-result .code-label {
+    .channel-box p {
       font-size: 14px;
-      color: #b0b8cc;
-      margin-top: 6px;
+      color: #aab;
+      margin-bottom: 6px;
     }
-    .entry-result .code {
-      font-size: 36px;
-      font-weight: 800;
-      letter-spacing: 2px;
-      color: #f7b733;
-      margin: 2px 0 6px;
-    }
-    .entry-result .info {
-      font-size: 14px;
-      color: #b0b8cc;
-    }
-    .entry-result .info span {
+    .channel-box a {
       color: #f7b733;
       font-weight: 600;
+      text-decoration: none;
+      font-size: 16px;
+      word-break: break-all;
     }
-    .entry-result .footnote {
-      margin-top: 12px;
-      font-size: 13px;
-      color: #8892b0;
+    .channel-box a:hover {
+      text-decoration: underline;
+    }
+    .channel-box i {
+      margin-right: 8px;
     }
 
-    /* ===== HELP / FOOTER ===== */
     .help-section {
       margin-top: 28px;
       padding-top: 20px;
@@ -547,35 +236,36 @@
       font-size: 18px;
     }
 
-    /* ===== RESPONSIVE ===== */
+    .footnote {
+      text-align: center;
+      font-size: 12px;
+      color: #6a7290;
+      margin-top: 28px;
+      border-top: 1px solid rgba(255, 255, 255, 0.04);
+      padding-top: 20px;
+      line-height: 1.6;
+    }
+    .footnote strong {
+      color: #aab;
+    }
+
+    /* Responsive */
     @media (max-width: 480px) {
       .container {
         padding: 24px 16px;
       }
-      .counter-box .number {
-        font-size: 22px;
+      .offer-card {
+        padding: 20px 16px;
       }
-      .method-btn {
-        font-size: 13px;
-        padding: 10px 4px;
+      .offer-card h3 {
+        font-size: 19px;
       }
-      .btn-submit {
+      .btn-telegram {
         font-size: 16px;
         padding: 16px;
       }
-      .receiver-row .value {
-        font-size: 14px;
-      }
-      .countdown-box .timer-unit .num {
-        font-size: 22px;
-      }
-      .countdown-box .timer-unit {
-        min-width: 50px;
-        padding: 4px 8px;
-      }
-      .converter-box .convert-result {
-        font-size: 16px;
-        padding: 4px 12px;
+      .header .logo {
+        font-size: 26px;
       }
     }
   </style>
@@ -583,518 +273,75 @@
 <body>
 
   <div class="container">
-
-    <!-- HEADER -->
+    <!-- Header -->
     <div class="header">
-      <h1>⚡ calekyzFX</h1>
-      <div class="sub"><i class="fas fa-users"></i> Pool Trading – (50$–20$)</div>
+      <div class="logo">⚡ calekyzFX</div>
+      <div class="tagline"><i class="fas fa-bolt"></i> Forex EA & Deriv Solutions</div>
     </div>
 
-    <!-- ===== HOW POOL TRADING WORKS (Accordion) ===== -->
-    <div class="pool-info">
-      <button class="toggle" id="infoToggle" onclick="toggleInfo()">
-        <span><i class="fas fa-lightbulb"></i> How Pool Trading Works</span>
-        <span class="arrow" id="infoArrow"><i class="fas fa-chevron-down"></i></span>
-      </button>
-      <div class="content" id="infoContent">
-        <p><strong>What is a Trading Pool?</strong></p>
-        <p>Instead of trading alone, we combine our capital into one big pool. This gives us more power to enter higher-tier trades and share the profits proportionally.</p>
-        <ul>
-          <li><strong>Step 1:</strong> You send your entry fee to the official M-Pesa or Binance address above.</li>
-          <li><strong>Step 2:</strong> You get a <strong>unique Entry Code</strong> (e.g., <code>POOL-045</code>) – this tracks your spot.</li>
-          <li><strong>Step 3:</strong> Once <strong>100 people</strong> have joined, the pool officially kicks off on <strong>1st July 2026</strong>.</li>
-          <li><strong>Step 4:</strong> calekyzFX trades the combined capital. Every trade is tracked and transparent.</li>
-          <li><strong>Step 5:</strong> <strong>Profits</strong> (after fees) are shared <strong>proportionally</strong> back to every participant based on their entry size.</li>
+    <!-- Offer 1: Forex EA -->
+    <div class="offer-grid">
+      <div class="offer-card">
+        <span class="badge">🔥 HOT</span>
+        <div class="icon">🤖</div>
+        <h3>Forex EA Challenge</h3>
+        <p>Grow a <strong class="highlight">$100</strong> account to <strong class="highlight">$4,000</strong> using our proprietary trading EA.</p>
+        <div class="price-tag">$115 <small>USD</small></div>
+        <ul class="feature-list">
+          <li><i class="fas fa-check-circle"></i> Fully automated trading</li>
+          <li><i class="fas fa-check-circle"></i> <strong>Free installation</strong> included</li>
+          <li><i class="fas fa-check-circle"></i> 24/7 support via Telegram</li>
+          <li><i class="fas fa-check-circle"></i> Proven backtested strategy</li>
         </ul>
-        <p style="margin-top:6px;">✅ All entries are confirmed via WhatsApp for your security and record.</p>
+      </div>
+
+      <!-- Offer 2: Deriv Daily Bot -->
+      <div class="offer-card">
+        <span class="badge">📈 DAILY</span>
+        <div class="icon">📊</div>
+        <h3>Deriv Daily Bot</h3>
+        <p>Trade binary options on <strong class="highlight">calekyz.com</strong> and earn <strong class="highlight">$5 – $20</strong> daily with automated withdrawals.</p>
+        <ul class="feature-list">
+          <li><i class="fas fa-check-circle"></i> Consistent daily profits</li>
+          <li><i class="fas fa-check-circle"></i> Withdraw earnings every day</li>
+          <li><i class="fas fa-check-circle"></i> Fully integrated with calekyz.com</li>
+          <li><i class="fas fa-check-circle"></i> Risk-managed, smart entries</li>
+        </ul>
+        <p style="margin-top: 12px; font-size: 14px; color: #8892b0;">
+          <i class="fas fa-info-circle" style="color: #f7b733;"></i> Access the bot via calekyz.com after purchase.
+        </p>
       </div>
     </div>
 
-    <!-- ===== COUNTDOWN TIMER ===== -->
-    <div class="countdown-box" id="countdownBox">
-      <div class="timer-label"><i class="far fa-clock"></i> Pool starts in</div>
-      <div class="timer-display" id="timerDisplay">
-        <div class="timer-unit">
-          <div class="num" id="timerDays">00</div>
-          <div class="label">Days</div>
-        </div>
-        <div class="timer-unit">
-          <div class="num" id="timerHours">00</div>
-          <div class="label">Hours</div>
-        </div>
-        <div class="timer-unit">
-          <div class="num" id="timerMinutes">00</div>
-          <div class="label">Min</div>
-        </div>
-        <div class="timer-unit">
-          <div class="num" id="timerSeconds">00</div>
-          <div class="label">Sec</div>
-        </div>
-      </div>
-      <div id="timerLiveMsg" style="display:none;" class="timer-live">🚀 Pool is LIVE! Join now.</div>
+    <!-- CTA: Telegram -->
+    <a href="https://t.me/mentor_calekyz" target="_blank" class="btn-telegram">
+      <i class="fab fa-telegram-plane"></i> Contact @mentor_calekyz to Buy
+    </a>
+
+    <!-- Telegram Channel Link -->
+    <div class="channel-box">
+      <p><i class="fas fa-bullhorn" style="color: #f7b733;"></i> Join our official Telegram channel for updates & signals:</p>
+      <a href="https://t.me/calekyz" target="_blank">
+        <i class="fab fa-telegram-plane"></i> t.me/your_channel
+      </a>
+      <!-- 👆 Replace "your_channel" with your actual channel username -->
     </div>
 
-    <!-- ===== REMAINING SPOTS (LIVE) ===== -->
-    <div class="counter-box">
-      <span class="label"><i class="fas fa-chair"></i> Spots remaining</span>
-      <span class="number" id="spotsLeft">⌛</span>
-    </div>
-    <div class="loading-indicator" id="statusMsg">
-      <i class="fas fa-spinner fa-pulse"></i> Connecting to live server...
-    </div>
-
-    <!-- ===== PAYMENT METHOD SELECTOR ===== -->
-    <div class="method-toggle">
-      <button class="method-btn active" data-method="mpesa">
-        <i class="fas fa-phone-alt"></i> M‑Pesa
-      </button>
-      <button class="method-btn" data-method="binance">
-        <i class="fab fa-bitcoin"></i> Binance
-      </button>
-    </div>
-
-    <!-- ===== YOUR RECEIVER DETAILS ===== -->
-    <div id="receiverInfo" class="receiver-details">
-      <div id="mpesaReceiver">
-        <div class="label"><i class="fas fa-arrow-down"></i> Send payment to (M-Pesa)</div>
-        <div class="receiver-row">
-          <span class="value"><i class="fas fa-phone"></i> 0799045699</span>
-          <button class="copy-btn" data-copy="0799045699" title="Copy number">
-            <i class="fas fa-copy"></i>
-          </button>
-        </div>
-      </div>
-      <div id="binanceReceiver" style="display:none;">
-        <div class="label"><i class="fas fa-arrow-down"></i> Send payment to (Binance)</div>
-        <div class="receiver-row">
-          <span class="value"><i class="fab fa-bitcoin"></i> TVvYRDdPyQCCg22onuaau56rS5PNP3Gx7s</span>
-          <button class="copy-btn" data-copy="TVvYRDdPyQCCg22onuaau56rS5PNP3Gx7s" title="Copy address">
-            <i class="fas fa-copy"></i>
-          </button>
-        </div>
-        <div class="receiver-row" style="margin-top: 8px;">
-          <span class="sub-value"><i class="fas fa-id-card"></i> Binance ID: 1067841957</span>
-          <button class="copy-btn" data-copy="1067841957" title="Copy ID">
-            <i class="fas fa-copy"></i>
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- ===== FORM ===== -->
-    <form id="entryForm" novalidate>
-      <div id="paymentDetails">
-        <div class="form-group" id="mpesaGroup">
-          <!-- ===== USD → KES CONVERTER (only for M-Pesa) ===== -->
-          <div class="converter-box" id="converterBox">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-              <label style="font-size:14px; font-weight:500; color:#c8d0e0;">
-                <i class="fas fa-dollar-sign" style="color:#f7b733; margin-right:6px;"></i> Amount in USD
-              </label>
-              <span style="font-size:12px; color:#8892b0;">1 USD ≈ <span id="rateDisplay">130</span> KES</span>
-            </div>
-            <div class="convert-row">
-              <input type="number" id="usdAmount" placeholder="Enter USD amount (e.g., 50)" min="0" step="0.01" />
-              <span class="convert-result" id="kesResult">— KES</span>
-            </div>
-            <div class="convert-note">
-              <i class="fas fa-info-circle"></i> Instant conversion – this is what you'll send via M‑Pesa.
-            </div>
-          </div>
-
-          <label><i class="fas fa-sms"></i> Your M‑Pesa confirmation message</label>
-          <textarea id="mpesaMessage" rows="3" placeholder="Paste the M‑Pesa message you received after sending ..."></textarea>
-          <div class="hint">Include the transaction code, amount, and sender name.</div>
-        </div>
-
-        <div class="form-group" id="binanceGroup" style="display:none;">
-          <label><i class="fas fa-hash"></i> Your Binance Transaction ID</label>
-          <input type="text" id="binanceTx" placeholder="Paste your withdrawal/deposit TX ID" />
-          <div class="hint">This is the ID you get after sending to the address above.</div>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label><i class="fas fa-camera"></i> Screenshot (optional)</label>
-        <div class="file-input-wrapper">
-          <input type="file" id="screenshot" accept="image/*" />
-        </div>
-        <div class="hint">Upload a screenshot (you will attach it manually in WhatsApp).</div>
-      </div>
-
-      <button type="submit" class="btn-submit" id="submitBtn">
-        <i class="fab fa-whatsapp"></i> Submit & Send to WhatsApp
-      </button>
-    </form>
-
-    <!-- ===== ENTRY RESULT ===== -->
-    <div class="entry-result" id="entryResult">
-      <div class="done-icon">✅</div>
-      <div class="done-title">DONE!</div>
-      <div class="code-label">Your entry number</div>
-      <div class="code" id="entryCode">POOL-001</div>
-      <div class="info">Remaining spots: <span id="spotsAfter">99</span></div>
-      <div class="footnote">We will confirm your entry via WhatsApp shortly.</div>
-    </div>
-
-    <!-- ===== HELP / FOOTER ===== -->
+    <!-- Help / Support -->
     <div class="help-section">
-      <a href="https://wa.me/254101606189" target="_blank">
-        <i class="fab fa-whatsapp"></i> Help Center
+      <a href="https://t.me/mentor_calekyz" target="_blank">
+        <i class="fab fa-telegram-plane"></i> Support
       </a>
       <a href="#">
-        <i class="fas fa-envelope"></i> calekyzFX Support
+        <i class="fas fa-envelope"></i> calekyzFX Help
       </a>
     </div>
+
+    <div class="footnote">
+      <strong>Risk Warning:</strong> Trading forex and binary options involves substantial risk. Past performance does not guarantee future results. Only trade with capital you can afford to lose.<br>
+      © 2025 calekyzFX — All rights reserved.
+    </div>
   </div>
-
-  <script>
-    (function() {
-      "use strict";
-
-      // ============================================================
-      // 1. 🔥 FIREBASE CONFIG (YOURS PASTED HERE)
-      // ============================================================
-      const FIREBASE_CONFIG = {
-        apiKey: "AIzaSyD9LNXH57bkQSDXCR-1Ey4zfWPlXcQljNs",
-        authDomain: "pooltrade-8bea9.firebaseapp.com",
-        databaseURL: "https://pooltrade-8bea9-default-rtdb.firebaseio.com",
-        projectId: "pooltrade-8bea9",
-        storageBucket: "pooltrade-8bea9.firebasestorage.app",
-        messagingSenderId: "131969808350",
-        appId: "1:131969808350:web:b68bfe3d97e72144facf4f"
-      };
-
-      // ============================================================
-      // 2. CONSTANTS
-      // ============================================================
-      const TOTAL_SPOTS = 100;
-      const WHATSAPP_NUMBER = '254101606189';
-      const POOL_NAME = 'calekyzFX Pool';
-      const USD_TO_KES = 130; // ← CHANGE THIS RATE IF NEEDED
-
-      // ============================================================
-      // 3. DOM REFS
-      // ============================================================
-      const spotsLeftEl = document.getElementById('spotsLeft');
-      const spotsAfterEl = document.getElementById('spotsAfter');
-      const entryCodeEl = document.getElementById('entryCode');
-      const entryResultEl = document.getElementById('entryResult');
-      const form = document.getElementById('entryForm');
-      const submitBtn = document.getElementById('submitBtn');
-      const statusMsg = document.getElementById('statusMsg');
-
-      const mpesaGroup = document.getElementById('mpesaGroup');
-      const binanceGroup = document.getElementById('binanceGroup');
-      const mpesaReceiver = document.getElementById('mpesaReceiver');
-      const binanceReceiver = document.getElementById('binanceReceiver');
-      const mpesaMsg = document.getElementById('mpesaMessage');
-      const binanceTx = document.getElementById('binanceTx');
-      const screenshotInput = document.getElementById('screenshot');
-      const methodBtns = document.querySelectorAll('.method-btn');
-
-      // Converter elements
-      const usdInput = document.getElementById('usdAmount');
-      const kesResult = document.getElementById('kesResult');
-      const rateDisplay = document.getElementById('rateDisplay');
-
-      // Show the current rate
-      rateDisplay.textContent = USD_TO_KES;
-
-      // Live conversion
-      usdInput.addEventListener('input', function() {
-        const usd = parseFloat(this.value);
-        if (isNaN(usd) || usd < 0) {
-          kesResult.textContent = '— KES';
-          return;
-        }
-        const kes = usd * USD_TO_KES;
-        kesResult.textContent = kes.toFixed(2) + ' KES';
-      });
-
-      let currentMethod = 'mpesa';
-      let currentRemaining = TOTAL_SPOTS;
-      let firebaseReady = false;
-
-      // ============================================================
-      // 4. COUNTDOWN TIMER (Target: July 1, 2026, Midnight EAT)
-      // ============================================================
-      const TARGET_DATE = new Date('2026-07-01T00:00:00+03:00').getTime();
-
-      function updateTimer() {
-        const now = Date.now();
-        const diff = TARGET_DATE - now;
-        const timerDisplay = document.getElementById('timerDisplay');
-        const liveMsg = document.getElementById('timerLiveMsg');
-
-        if (diff <= 0) {
-          timerDisplay.style.display = 'none';
-          liveMsg.style.display = 'block';
-          return;
-        }
-        timerDisplay.style.display = 'flex';
-        liveMsg.style.display = 'none';
-
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-        document.getElementById('timerDays').textContent = String(days).padStart(2, '0');
-        document.getElementById('timerHours').textContent = String(hours).padStart(2, '0');
-        document.getElementById('timerMinutes').textContent = String(minutes).padStart(2, '0');
-        document.getElementById('timerSeconds').textContent = String(seconds).padStart(2, '0');
-      }
-      updateTimer();
-      setInterval(updateTimer, 1000);
-
-      // ============================================================
-      // 5. ACCORDION (Pool Info)
-      // ============================================================
-      window.toggleInfo = function() {
-        const content = document.getElementById('infoContent');
-        const arrow = document.getElementById('infoArrow');
-        content.classList.toggle('open');
-        arrow.classList.toggle('open');
-      };
-
-      // ============================================================
-      // 6. COPY BUTTONS
-      // ============================================================
-      document.querySelectorAll('.copy-btn').forEach(btn => {
-        btn.addEventListener('click', function(e) {
-          e.stopPropagation();
-          const text = this.dataset.copy;
-          if (!text) return;
-          if (navigator.clipboard && navigator.clipboard.writeText) {
-            navigator.clipboard.writeText(text).then(() => showCopiedFeedback(this))
-              .catch(() => fallbackCopy(text, this));
-          } else {
-            fallbackCopy(text, this);
-          }
-        });
-      });
-
-      function fallbackCopy(text, btn) {
-        const textArea = document.createElement('textarea');
-        textArea.value = text;
-        textArea.style.position = 'fixed';
-        textArea.style.opacity = '0';
-        document.body.appendChild(textArea);
-        textArea.select();
-        try {
-          document.execCommand('copy');
-          showCopiedFeedback(btn);
-        } catch (err) {
-          alert('Could not copy. Please select and copy the text manually.');
-        }
-        document.body.removeChild(textArea);
-      }
-
-      function showCopiedFeedback(btn) {
-        const icon = btn.querySelector('i');
-        const originalClass = icon.className;
-        icon.className = 'fas fa-check';
-        btn.classList.add('copied');
-        setTimeout(() => {
-          icon.className = originalClass;
-          btn.classList.remove('copied');
-        }, 2000);
-      }
-
-      // ============================================================
-      // 7. METHOD TOGGLE
-      // ============================================================
-      methodBtns.forEach(btn => {
-        btn.addEventListener('click', function() {
-          methodBtns.forEach(b => b.classList.remove('active'));
-          this.classList.add('active');
-          currentMethod = this.dataset.method;
-          if (currentMethod === 'mpesa') {
-            mpesaReceiver.style.display = 'block';
-            binanceReceiver.style.display = 'none';
-            mpesaGroup.style.display = 'block';
-            binanceGroup.style.display = 'none';
-          } else {
-            mpesaReceiver.style.display = 'none';
-            binanceReceiver.style.display = 'block';
-            mpesaGroup.style.display = 'none';
-            binanceGroup.style.display = 'block';
-          }
-        });
-      });
-
-      // ============================================================
-      // 8. FIREBASE INIT + LIVE COUNTER
-      // ============================================================
-      let dbRef = null;
-      let loadTimeout = null;
-
-      function initFirebase() {
-        try {
-          firebase.initializeApp(FIREBASE_CONFIG);
-          dbRef = firebase.database().ref('/pool/remaining');
-          startListener();
-        } catch (e) {
-          statusMsg.innerHTML = '⚠️ Firebase init error: ' + e.message;
-          spotsLeftEl.textContent = '❌';
-        }
-      }
-
-      function startListener() {
-        loadTimeout = setTimeout(() => {
-          if (!firebaseReady) {
-            statusMsg.innerHTML =
-              '⚠️ Still loading... Check your Firebase Rules (set to "test mode") or <button class="retry-btn" onclick="window.location.reload()">Retry</button>';
-            spotsLeftEl.textContent = '⏳';
-          }
-        }, 8000);
-
-        dbRef.on('value', (snapshot) => {
-          clearTimeout(loadTimeout);
-          const val = snapshot.val();
-
-          if (val !== null && val !== undefined) {
-            currentRemaining = val;
-            spotsLeftEl.textContent = val;
-            firebaseReady = true;
-            statusMsg.innerHTML = '<i class="fas fa-check-circle" style="color:#2ecc71;"></i> Live & synced';
-            statusMsg.style.color = '#2ecc71';
-
-            if (val <= 0) {
-              submitBtn.disabled = true;
-              submitBtn.innerHTML = '<i class="fas fa-check-circle"></i> Pool Full';
-              submitBtn.style.opacity = '0.7';
-            } else {
-              submitBtn.disabled = false;
-              submitBtn.innerHTML = '<i class="fab fa-whatsapp"></i> Submit & Send to WhatsApp';
-              submitBtn.style.opacity = '1';
-            }
-          } else {
-            dbRef.set(TOTAL_SPOTS).then(() => {
-              currentRemaining = TOTAL_SPOTS;
-              spotsLeftEl.textContent = TOTAL_SPOTS;
-              firebaseReady = true;
-              statusMsg.innerHTML = '<i class="fas fa-check-circle" style="color:#2ecc71;"></i> Live & synced';
-            }).catch(err => {
-              statusMsg.innerHTML = '⚠️ Permission denied. Set Firebase Rules to "test mode".';
-              spotsLeftEl.textContent = '🚫';
-              console.error(err);
-            });
-          }
-        }, (error) => {
-          clearTimeout(loadTimeout);
-          statusMsg.innerHTML = '⚠️ Connection error: ' + error.message + '. <button class="retry-btn" onclick="window.location.reload()">Retry</button>';
-          spotsLeftEl.textContent = '❌';
-          console.error('Firebase read error:', error);
-        });
-      }
-
-      initFirebase();
-
-      // ============================================================
-      // 9. GENERATE ENTRY CODE
-      // ============================================================
-      function generateEntryCode(newRemaining) {
-        const enteredCount = TOTAL_SPOTS - newRemaining;
-        const padded = String(enteredCount).padStart(3, '0');
-        return `POOL-${padded}`;
-      }
-
-      // ============================================================
-      // 10. SUBMIT HANDLER
-      // ============================================================
-      form.addEventListener('submit', function(e) {
-        e.preventDefault();
-
-        if (!firebaseReady) {
-          alert('⏳ Please wait for the connection to sync. Refresh if it takes too long.');
-          return;
-        }
-
-        if (currentRemaining <= 0) {
-          alert('❌ Sorry, the pool is full (100 participants reached).');
-          return;
-        }
-
-        let paymentText = '';
-        if (currentMethod === 'mpesa') {
-          const msg = mpesaMsg.value.trim();
-          if (!msg) {
-            alert('Please paste your M‑Pesa confirmation message.');
-            mpesaMsg.focus();
-            return;
-          }
-          paymentText = `M-Pesa Msg: ${msg}`;
-        } else {
-          const tx = binanceTx.value.trim();
-          if (!tx) {
-            alert('Please paste your Binance Transaction ID.');
-            binanceTx.focus();
-            return;
-          }
-          paymentText = `Binance TX: ${tx}`;
-        }
-
-        let screenshotInfo = '';
-        if (screenshotInput.files.length > 0) {
-          screenshotInfo = ` (Screenshot: ${screenshotInput.files[0].name} - attach manually)`;
-        }
-
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Processing...';
-
-        dbRef.transaction((currentValue) => {
-          if (currentValue === null) return TOTAL_SPOTS;
-          if (currentValue <= 0) return;
-          return currentValue - 1;
-        }, (error, committed, snapshot) => {
-          if (error) {
-            alert('❌ Server error. Please refresh and try again.');
-            console.error(error);
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = '<i class="fab fa-whatsapp"></i> Submit & Send to WhatsApp';
-            return;
-          }
-
-          if (!committed) {
-            alert('❌ Sorry, the pool just filled up! No more spots.');
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i class="fas fa-check-circle"></i> Pool Full';
-            submitBtn.style.opacity = '0.7';
-            return;
-          }
-
-          const newRemaining = snapshot.val();
-          const entryCode = generateEntryCode(newRemaining);
-
-          entryCodeEl.textContent = entryCode;
-          spotsAfterEl.textContent = newRemaining;
-          entryResultEl.classList.add('show');
-          entryResultEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-          const message = `🎯 *${POOL_NAME} Entry*%0A` +
-            `🔹 *Entry Code:* ${entryCode}%0A` +
-            `💳 *Method:* ${currentMethod.toUpperCase()}%0A` +
-            `📝 *Proof:* ${paymentText}%0A` +
-            `📸 ${screenshotInfo || 'No screenshot attached'}`;
-
-          window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${message}`, '_blank');
-
-          screenshotInput.value = '';
-          if (newRemaining > 0) {
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = '<i class="fab fa-whatsapp"></i> Submit & Send to WhatsApp';
-          } else {
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i class="fas fa-check-circle"></i> Pool Full';
-            submitBtn.style.opacity = '0.7';
-          }
-        });
-      });
-
-    })();
-  </script>
 
 </body>
 </html>
